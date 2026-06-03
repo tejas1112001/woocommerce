@@ -24,3 +24,9 @@ build
 !.yarn/versions
 
 .medusa
+
+# Uploaded/static files (runtime-generated, not source)
+/static/
+
+# Locally installed plugin tarballs
+*.tgz
