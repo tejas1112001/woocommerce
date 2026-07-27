@@ -4,12 +4,27 @@ import {
   Modules,
   ContainerRegistrationKeys,
 } from '@medusajs/framework/utils'
+import { existsSync } from 'fs'
+import { resolve } from 'path'
+import dotenv from 'dotenv'
 
-loadEnv(process.env.NODE_ENV || 'development', process.cwd())
+const nodeEnv = process.env.NODE_ENV || 'development'
+loadEnv(nodeEnv, process.cwd())
+
+const localEnvPath = resolve(process.cwd(), '.env.local')
+if (nodeEnv !== 'production' && existsSync(localEnvPath)) {
+  dotenv.config({ path: localEnvPath, override: true })
+}
+
+const productionEnvPath = resolve(process.cwd(), '.env.production')
+if (nodeEnv === 'production' && existsSync(productionEnvPath)) {
+  dotenv.config({ path: productionEnvPath, override: true })
+}
 
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    redisUrl: process.env.REDIS_URL,
     http: {
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
@@ -18,35 +33,44 @@ module.exports = defineConfig({
       cookieSecret: process.env.COOKIE_SECRET || "supersecret",
     }
   },
-  plugins: ["medusa-plugin-razorpay-v2"],
-  modules: {
-    payment: {
-      resolve: '@medusajs/medusa/payment',
-      dependencies: [
-        Modules.PAYMENT,
-        ContainerRegistrationKeys.LOGGER,
-      ],
-      providers: [
-        {
-          resolve: 'medusa-plugin-razorpay-v2/providers/payment-razorpay/src',
-          id: 'razorpay',
-          key_id:
-            process.env.RAZORPAY_TEST_KEY_ID ?? process.env.RAZORPAY_ID,
-          key_secret:
-            process.env.RAZORPAY_TEST_KEY_SECRET ?? process.env.RAZORPAY_SECRET,
-          razorpay_account:
-            process.env.RAZORPAY_TEST_ACCOUNT ?? process.env.RAZORPAY_ACCOUNT,
-          automatic_expiry_period:
-            process.env.RAZORPAY_TEST_AUTO_EXPIRY_PERIOD ??
-            process.env.RAZORPAY_AUTO_EXPIRY_PERIOD,
-          manual_expiry_period:
-            process.env.RAZORPAY_TEST_MANUAL_EXPIRY_PERIOD ??
-            process.env.RAZORPAY_MANUAL_EXPIRY_PERIOD,
-          webhook_secret:
-            process.env.RAZORPAY_TEST_WEBHOOK_SECRET ??
-            process.env.RAZORPAY_WEBHOOK_SECRET,
-        },
-      ],
+  plugins: [],
+  modules: [
+    {
+      resolve: "@medusajs/medusa/payment",
+      dependencies: [Modules.PAYMENT, ContainerRegistrationKeys.LOGGER],
+      options: {
+        providers: [
+          {
+            resolve:
+              "medusa-plugin-razorpay-v2/providers/payment-razorpay/src",
+            id: "razorpay",
+            options: {
+              key_id:
+                process.env.RAZORPAY_TEST_KEY_ID ?? process.env.RAZORPAY_ID,
+              key_secret:
+                process.env.RAZORPAY_TEST_KEY_SECRET ??
+                process.env.RAZORPAY_SECRET,
+              razorpay_account:
+                process.env.RAZORPAY_TEST_ACCOUNT || process.env.RAZORPAY_ACCOUNT || undefined,
+              automatic_expiry_period:
+                process.env.RAZORPAY_TEST_AUTO_EXPIRY_PERIOD ??
+                process.env.RAZORPAY_AUTO_EXPIRY_PERIOD,
+              manual_expiry_period:
+                process.env.RAZORPAY_TEST_MANUAL_EXPIRY_PERIOD ??
+                process.env.RAZORPAY_MANUAL_EXPIRY_PERIOD,
+              webhook_secret:
+                process.env.RAZORPAY_TEST_WEBHOOK_SECRET ??
+                process.env.RAZORPAY_WEBHOOK_SECRET,
+              // Enable automatic payment capture
+              // When true, payments are automatically captured after authorization
+              // This removes the need for manual "Capture Payment" in admin
+              auto_capture: true,
+            },
+          },
+        ],
+      },
     },
-  },
+  ],
 })
+// Reload trigger
+

@@ -21,16 +21,28 @@ export default async function completeOrderOnDelivery({
 
   const query = container.resolve(ContainerRegistrationKeys.QUERY)
 
-  // Traverse the fulfillment → order link to get the associated order
+  // 1. Traverse the fulfillment → order link to get the associated order ID
   const { data: fulfillments } = await query.graph({
     entity: "fulfillment",
     filters: { id: fulfillmentId },
-    fields: ["id", "order.id", "order.status", "order.fulfillment_status"],
+    fields: ["id", "order.id"],
   })
 
-  const order = (fulfillments as any)?.[0]?.order
-  if (!order?.id) {
+  const orderId = (fulfillments as any)?.[0]?.order?.id
+  if (!orderId) {
     // Not linked to an order (e.g. a standalone return fulfillment)
+    return
+  }
+
+  // 2. Query root order entity so Medusa correctly calculates fulfillment_status
+  const { data: orders } = await query.graph({
+    entity: "order",
+    filters: { id: orderId },
+    fields: ["id", "status", "fulfillment_status"],
+  })
+
+  const order = (orders as any)?.[0]
+  if (!order) {
     return
   }
 
