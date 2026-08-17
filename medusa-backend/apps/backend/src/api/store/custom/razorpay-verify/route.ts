@@ -41,10 +41,12 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
     }
 
     // --- Retrieve the key secret from environment (server-side only) ---
-    // We prefer RAZORPAY_TEST_KEY_SECRET for local dev, fall back to RAZORPAY_SECRET.
+    // We prefer RAZORPAY_TEST_KEY_SECRET for local dev, fall back to RAZORPAY_KEY_SECRET / RAZORPAY_SECRET.
     // This secret is NEVER sent to the browser.
     const keySecret =
-      process.env.RAZORPAY_TEST_KEY_SECRET ?? process.env.RAZORPAY_SECRET;
+      process.env.RAZORPAY_TEST_KEY_SECRET ??
+      process.env.RAZORPAY_KEY_SECRET ??
+      process.env.RAZORPAY_SECRET;
 
     if (!keySecret) {
       console.error(

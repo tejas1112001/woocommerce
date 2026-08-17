@@ -1,0 +1,4 @@
+Reset initiated at 2026-08-12T11:53:16.264Z.
+pg_dump notice: Command failed: pg_dump "postgres://postgres:tejas@localhost/medusa-medusa-backend" -f "C:\self_learning\project\medusa-backend\apps\backend\backups\backup_before_reset_2026-08-12T11-53-16-201Z.sql"
+'pg_dump' is not recognized as an internal or external command,
+operable program or batch file.

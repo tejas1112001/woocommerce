@@ -36,6 +36,9 @@ module.exports = defineConfig({
   plugins: [],
   modules: [
     {
+      resolve: "./src/modules/store-settings",
+    },
+    {
       resolve: "@medusajs/medusa/payment",
       dependencies: [Modules.PAYMENT, ContainerRegistrationKeys.LOGGER],
       options: {

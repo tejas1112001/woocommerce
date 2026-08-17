@@ -7,16 +7,17 @@ async function run() {
 
   try {
     await client.connect()
-    console.log('Connected to database\n')
+    console.log('Updating admin@test.com password to Password123! ...\n')
 
-    const res = await client.query(`
-      SELECT id, display_id, status, updated_at
-      FROM "order"
-      WHERE display_id IN (5, 7)
-      ORDER BY display_id ASC
-    `)
-    console.table(res.rows)
+    const hash = 'c2NyeXB0AA8AAAAIAAAAAcDV4u9Qd37CrUWPT/2IEVd85ebbmXd+l59huSLLgrkvZYR/UKz6TsGy6pcvPEZmUk2i6f6Bj8fDCDfGHGIVG816InL658eMXchwHEv/xFwB'
 
+    await client.query(`
+      UPDATE provider_identity
+      SET provider_metadata = jsonb_build_object('password', $1::text)
+      WHERE entity_id = 'admin@test.com';
+    `, [hash])
+
+    console.log('Successfully set admin@test.com password to Password123!')
   } catch (error) {
     console.error('Error:', error)
   } finally {
