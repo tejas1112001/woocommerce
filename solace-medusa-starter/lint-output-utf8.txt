@@ -1,0 +1,602 @@
+﻿
+> tejas-medusa-starter@0.0.1 lint
+> eslint . --report-unused-disable-directives --max-warnings=0
+
+
+C:\self_learning\project\solace-medusa-starter\e2e\fixtures\medusa-test-fixtures\base\base-page.ts
+  30:27  warning  'category' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\fixtures\medusa-test-fixtures\base\cart-page.ts
+  104:21  warning  'code' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\01-homepage\1-shop-page.spec.ts
+  23:5   warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  28:51  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  32:52  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  36:48  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  40:45  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  44:62  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  48:57  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  52:37  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\01-homepage\2-homepage.spec.ts
+  16:54  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  20:46  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  28:39  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  33:5   warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  39:5   warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  47:5   warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\01-homepage\3-about-us-page.spec.ts
+  24:64  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  28:42  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  32:47  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  36:45  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  40:55  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  44:50  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\01-homepage\4-searchbar.spec.ts
+  24:47  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  28:59  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  32:65  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\02-account\1-signup.spec.ts
+  55:53  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\02-account\2-signin.spec.ts
+  31:68  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  39:44  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\02-account\3-check-account-settings.spec.ts
+  11:34  warning  'browser' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\02-account\4-check-order-history.spec.ts
+  11:34  warning  'browser' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\02-account\5-check-shipping-details.spec.ts
+  11:34  warning  'browser' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\03-checkout\1-adding-to-cart.spec.ts
+  23:41  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  28:5   warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  36:5   warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  43:37  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+  49:53  warning  'page' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\e2e\tests\03-checkout\2-checkout-flow.spec.ts
+  11:34  warning  'browser' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\next-sitemap.js
+  3:1   error  'module' is not defined   no-undef
+  4:12  error  'process' is not defined  no-undef
+
+C:\self_learning\project\solace-medusa-starter\preset\plugins\colors.js
+  118:1  error  'module' is not defined  no-undef
+
+C:\self_learning\project\solace-medusa-starter\preset\plugins\plugin.js
+   1:16  error  'require' is not defined  no-undef
+   2:34  error  'require' is not defined  no-undef
+  39:1   error  'module' is not defined   no-undef
+
+C:\self_learning\project\solace-medusa-starter\preset\preset.js
+  1:18  error  'require' is not defined  no-undef
+  2:17  error  'require' is not defined  no-undef
+  4:1   error  'module' is not defined   no-undef
+
+C:\self_learning\project\solace-medusa-starter\preset\theme\animations.js
+  16:1  error  'module' is not defined  no-undef
+
+C:\self_learning\project\solace-medusa-starter\preset\theme\colors.js
+  135:1  error  'module' is not defined  no-undef
+
+C:\self_learning\project\solace-medusa-starter\preset\theme\constants.js
+  10:1  error  'module' is not defined  no-undef
+
+C:\self_learning\project\solace-medusa-starter\preset\theme\theme.js
+   1:34  error  'require' is not defined  no-undef
+   2:31  error  'require' is not defined  no-undef
+   3:21  error  'require' is not defined  no-undef
+   4:34  error  'require' is not defined  no-undef
+  18:1   error  'module' is not defined   no-undef
+
+C:\self_learning\project\solace-medusa-starter\preset\theme\typography.js
+   1:22  error  'require' is not defined  no-undef
+  16:1   error  'module' is not defined   no-undef
+
+C:\self_learning\project\solace-medusa-starter\scripts\move-banners.js
+   1:12  error  'require' is not defined    no-undef
+   2:14  error  'require' is not defined    no-undef
+   4:34  error  '__dirname' is not defined  no-undef
+  12:3   error  'process' is not defined    no-undef
+
+C:\self_learning\project\solace-medusa-starter\src\app\[countryCode]\(main)\account\@dashboard\orders\page.tsx
+  32:17  error  'count' is never reassigned. Use 'const' instead  prefer-const
+
+C:\self_learning\project\solace-medusa-starter\src\app\[countryCode]\(main)\categories\[...category]\layout.tsx
+  2:10  warning  'notFound' is defined but never used  unused-imports/no-unused-imports
+
+C:\self_learning\project\solace-medusa-starter\src\lib\data\categories.ts
+  15:5  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+  24:5  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\self_learning\project\solace-medusa-starter\src\lib\data\cookies.ts
+  6:31  error  The `{}` ("empty object") type allows any non-nullish value, including literals like `0` and `""`.
+- If that's what you want, disable this lint rule with an inline comment or configure the 'allowObjectTypes' rule option.
+- If you want a type meaning "any object", you probably want `object` instead.
+- If you want a type meaning "any value", you probably want `unknown` instead  @typescript-eslint/no-empty-object-type
+
+C:\self_learning\project\solace-medusa-starter\src\lib\data\customer.ts
+  266:7  error  Unexpected constant condition  no-constant-condition
+  317:7  error  Unexpected constant condition  no-constant-condition
+
+C:\self_learning\project\solace-medusa-starter\src\lib\data\products.ts
+  5:10  warning  'ProductFilters' is defined but never used  unused-imports/no-unused-imports
+
+C:\self_learning\project\solace-medusa-starter\src\lib\hooks\use-address-select.tsx
+  134:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\lib\hooks\use-address-select.tsx:134:7
+  132 |       !cart?.shipping_address?.id
+  133 |     ) {
+> 134 |       setChoosenAddressId(defaultShippingAddress.id)
+      |       ^^^^^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  135 |     }
+  136 |   }, [addresses, cart?.shipping_address?.id, choosenAddressId])
+  137 |  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\lib\util\serializeMdx.ts
+  14:7  error  'headings' is never reassigned. Use 'const' instead                                                                  prefer-const
+  20:9  error  Use "@ts-expect-error" instead of "@ts-ignore", as "@ts-ignore" will do nothing if the following line is error-free  @typescript-eslint/ban-ts-comment
+
+C:\self_learning\project\solace-medusa-starter\src\lib\util\validator.ts
+  28:23  error  Unnecessary escape character: \[  no-useless-escape
+  28:40  error  Unnecessary escape character: \/  no-useless-escape
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\account-nav\account-mobile-nav.tsx
+  36:7  error  Error: Cannot access variable before it is declared
+
+`scrollToTab` is accessed before it is declared, which prevents the earlier access from updating when this value changes over time.
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\account-nav\account-mobile-nav.tsx:36:7
+  34 |         width: `${offsetWidth}px`,
+  35 |       })
+> 36 |       scrollToTab(activeElement)
+     |       ^^^^^^^^^^^ `scrollToTab` accessed before it is declared
+  37 |     }
+  38 |   }, [])
+  39 |
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\account-nav\account-mobile-nav.tsx:44:3
+  42 |   }, [updateBorderPosition])
+  43 |
+> 44 |   const scrollToTab = (tabElement: HTMLElement) => {
+     |   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 45 |     if (tabsRef.current) {
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 46 |       const container = tabsRef.current
+     ÔÇª
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 55 |     }
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 56 |   }
+     | ^^^^ `scrollToTab` is declared here
+  57 |
+  58 |   const handleTabChange = (index: number) => {
+  59 |     updateBorderPosition(index)  react-hooks/immutability
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\login\index.tsx
+  57:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\login\index.tsx:57:7
+  55 |   useEffect(() => {
+  56 |     if (message && typeof message === 'string') {
+> 57 |       setLocalMessage(message)
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  58 |     }
+  59 |   }, [message])
+  60 |  react-hooks/set-state-in-effect
+  71:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\login\index.tsx:71:7
+  69 |         toast('error', localMessage)
+  70 |       }
+> 71 |       setLocalMessage(null)
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  72 |     }
+  73 |   }, [localMessage])
+  74 |                         react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\profile-password\index.tsx
+  40:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\profile-password\index.tsx:40:7
+  38 |     if (formState.success) {
+  39 |       toast('success', 'Password updated successfully.')
+> 40 |       setOpen(false)
+     |       ^^^^^^^ Avoid calling setState() directly within an effect
+  41 |     }
+  42 |   }, [formState.success])
+  43 |  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\register\index.tsx
+   17:8  warning  'LocalizedClientLink' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                unused-imports/no-unused-imports
+   92:7  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\register\index.tsx:92:7
+  90 |   useEffect(() => {
+  91 |     if (message && typeof message === 'string') {
+> 92 |       setLocalMessage(message)
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  93 |     }
+  94 |   }, [message])
+  95 |  react-hooks/set-state-in-effect
+  109:7  error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\register\index.tsx:109:7
+  107 |         toast('error', localMessage)
+  108 |       }
+> 109 |       setLocalMessage(null)
+      |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  110 |     }
+  111 |   }, [localMessage])
+  112 |                 react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\components\wishlist\index.tsx
+  18:3  warning  'countryCode' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\templates\login-template.tsx
+  36:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\account\templates\login-template.tsx:36:7
+  34 |         ? `/account?redirectTo=${encodeURIComponent(redirectTo)}`
+  35 |         : `/account`
+> 36 |       setCurrentView(mode)
+     |       ^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  37 |       router.replace(newUrl)
+  38 |     }
+  39 |   }, [mode, router, redirectTo])  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\categories\templates\index.tsx
+  27:63  warning  'category' is assigned a value but never used. Allowed unused vars must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\src\modules\checkout\components\address-select\index.tsx
+  3:10  warning  'useEffect' is defined but never used  unused-imports/no-unused-imports
+  3:21  warning  'useState' is defined but never used   unused-imports/no-unused-imports
+
+C:\self_learning\project\solace-medusa-starter\src\modules\checkout\components\billing_address\index.tsx
+  3:10  warning  'FormikErrorsType' is defined but never used  unused-imports/no-unused-imports
+  7:10  warning  'FormikErrors' is defined but never used      unused-imports/no-unused-imports
+
+C:\self_learning\project\solace-medusa-starter\src\modules\checkout\components\shipping-address\index.tsx
+   3:10  warning  'FormikErrorsType' is defined but never used  unused-imports/no-unused-imports
+  11:10  warning  'FormikErrors' is defined but never used      unused-imports/no-unused-imports
+
+C:\self_learning\project\solace-medusa-starter\src\modules\common\components\input\index.tsx
+  30:9  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\common\components\input\index.tsx:30:9
+  28 |     useEffect(() => {
+  29 |       if (type === 'password' && showPassword) {
+> 30 |         setInputType('text')
+     |         ^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  31 |       }
+  32 |
+  33 |       if (type === 'password' && !showPassword) {  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\common\components\menu\index.tsx
+  145:58  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\common\components\menu\index.tsx:145:58
+  143 |         onFocus={composeEventHandlers(props.onFocus, () => setIsFocused(true))}
+  144 |         onBlur={composeEventHandlers(props.onBlur, () => setIsFocused(false))}
+> 145 |         onKeyDown={composeEventHandlers(props.onKeyDown, handleKeyDown)}
+      |                                                          ^^^^^^^^^^^^^ Passing a ref to a function may read its value during render
+  146 |         className={cn(
+  147 |           'flex h-full cursor-pointer gap-4 rounded-xl p-4 !ring-0 !ring-offset-0 transition-all duration-200 ease-in-out hover:bg-hover focus:bg-hover',
+  148 |           {  react-hooks/refs
+
+C:\self_learning\project\solace-medusa-starter\src\modules\common\components\native-select\index.tsx
+  46:8  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\common\components\native-select\index.tsx:46:8
+  44 |         setIsPlaceholder(false)
+  45 |       }
+> 46 |     }, [innerRef.current?.value])
+     |        ^^^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  47 |
+  48 |     return (
+  49 |       <div>  react-hooks/refs
+  46:9  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\common\components\native-select\index.tsx:46:9
+  44 |         setIsPlaceholder(false)
+  45 |       }
+> 46 |     }, [innerRef.current?.value])
+     |         ^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  47 |
+  48 |     return (
+  49 |       <div>          react-hooks/refs
+  46:9  error  Error: Cannot access refs during render
+
+React refs are values that are not needed for rendering. Refs should only be accessed outside of render, such as in event handlers or effects. Accessing a ref value (the `current` property) during render can cause your component not to update as expected (https://react.dev/reference/react/useRef).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\common\components\native-select\index.tsx:46:9
+  44 |         setIsPlaceholder(false)
+  45 |       }
+> 46 |     }, [innerRef.current?.value])
+     |         ^^^^^^^^^^^^^^^^^^^^^^^ Cannot access ref value during render
+  47 |
+  48 |     return (
+  49 |       <div>   react-hooks/refs
+
+C:\self_learning\project\solace-medusa-starter\src\modules\home\components\hero-section.tsx
+  3:8  warning  'heroImg1' is defined but never used  unused-imports/no-unused-imports
+  4:8  warning  'Image' is defined but never used     unused-imports/no-unused-imports
+
+C:\self_learning\project\solace-medusa-starter\src\modules\layout\components\country-select\index.tsx
+  50:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\layout\components\country-select\index.tsx:50:7
+  48 |     if (countryCode) {
+  49 |       const option = options?.find((o) => o?.country === countryCode)
+> 50 |       setCurrent(option)
+     |       ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  51 |     }
+  52 |   }, [options, countryCode])
+  53 |  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\layout\components\side-menu\index.tsx
+  20:10  warning  'Heading' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          unused-imports/no-unused-imports
+  48:5   error    Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\layout\components\side-menu\index.tsx:48:5
+  46 |
+  47 |   useEffect(() => {
+> 48 |     setMounted(true)
+     |     ^^^^^^^^^^ Avoid calling setState() directly within an effect
+  49 |   }, [])
+  50 |
+  51 |   const navigation = useMemo(  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\mdx\MDXComponents.tsx
+  8:7  error  Using target="_blank" without rel="noreferrer" (which implies rel="noopener") is a security risk in older browsers: see https://mathiasbynens.github.io/rel-noopener/#recommendations  react/jsx-no-target-blank
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\image-gallery\gallery-dialog.tsx
+  59:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\image-gallery\gallery-dialog.tsx:59:7
+  57 |   useEffect(() => {
+  58 |     if (activeImg !== null) {
+> 59 |       setCurrentIndex(activeImg)
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  60 |     }
+  61 |   }, [activeImg])
+  62 |  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\image-gallery\image-carousel.tsx
+  27:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\image-gallery\image-carousel.tsx:27:5
+  25 |     if (!emblaApi) return
+  26 |
+> 27 |     onSelect()
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  28 |     emblaApi.on('select', onSelect)
+  29 |     emblaApi.on('reInit', onSelect)
+  30 |                                                                                                            react-hooks/set-state-in-effect
+  50:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\image-gallery\image-carousel.tsx:50:5
+  48 |     // Always snap back to the first slide (variant thumbnail)
+  49 |     emblaApi.scrollTo(0, true /* jump without animation */)
+> 50 |     setCurrentIndex(0)
+     |     ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  51 |   }, [emblaApi, images])
+  52 |
+  53 |   const slideWidth = 100 / images.length  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\image-gallery\index.tsx
+  80:13  error  Expected an assignment or function call and instead saw an expression  @typescript-eslint/no-unused-expressions
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\product-carousel\carousel-wrapper.tsx
+  39:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\product-carousel\carousel-wrapper.tsx:39:5
+  37 |   useEffect(() => {
+  38 |     if (!emblaApi) return
+> 39 |     onSelect()
+     |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  40 |     emblaApi.on('reInit', onSelect).on('select', onSelect)
+  41 |   }, [emblaApi, onSelect])
+  42 |  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\product-tabs\index.tsx
+  22:30  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `product.metadata`, but the source dependencies were [product?.metadata]. Inferred different dependency than source.
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\product-tabs\index.tsx:22:30
+  20 |
+  21 | export default function ProductTabs({ product }: ProductTabsProps) {
+> 22 |   const dimensions = useMemo(() => {
+     |                              ^^^^^^^
+> 23 |     return Object.entries(product?.metadata || {})
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 24 |       .filter(([key]) => key.startsWith('dim_'))
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 25 |       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 26 |   }, [product?.metadata])
+     | ^^^^ Could not preserve existing manual memoization
+  27 |
+  28 |   const design = useMemo(() => {
+  29 |     return Object.entries(product?.metadata || {})  react-hooks/preserve-manual-memoization
+  28:26  error  Compilation Skipped: Existing memoization could not be preserved
+
+React Compiler has skipped optimizing this component because the existing manual memoization could not be preserved. The inferred dependencies did not match the manually specified dependencies, which could cause the value to change more or less frequently than expected. The inferred dependency was `product.metadata`, but the source dependencies were [product?.metadata]. Inferred different dependency than source.
+
+C:\self_learning\project\solace-medusa-starter\src\modules\products\components\product-tabs\index.tsx:28:26
+  26 |   }, [product?.metadata])
+  27 |
+> 28 |   const design = useMemo(() => {
+     |                          ^^^^^^^
+> 29 |     return Object.entries(product?.metadata || {})
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 30 |       .filter(([key]) => key.startsWith('des_'))
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 31 |       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {})
+     | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 32 |   }, [product?.metadata])
+     | ^^^^ Could not preserve existing manual memoization
+  33 |
+  34 |   const tabs = [
+  35 |     {                                                                                                                  react-hooks/preserve-manual-memoization
+
+C:\self_learning\project\solace-medusa-starter\src\modules\reset-password\components\reset-password.tsx
+   91:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\reset-password\components\reset-password.tsx:91:7
+  89 |   useEffect(() => {
+  90 |     if (message) {
+> 91 |       setLocalMessage(message)
+     |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  92 |       startTransition(() => {
+  93 |         formAction(new FormData())
+  94 |       })           react-hooks/set-state-in-effect
+  104:7  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\reset-password\components\reset-password.tsx:104:7
+  102 |         'An error occurred while resetting the password. Please try again later.'
+  103 |       )
+> 104 |       setLocalMessage(null)
+      |       ^^^^^^^^^^^^^^^ Avoid calling setState() directly within an effect
+  105 |     }
+  106 |   }, [localMessage])
+  107 |  react-hooks/set-state-in-effect
+
+C:\self_learning\project\solace-medusa-starter\src\modules\search\actions.ts
+  44:3  warning  'currency_code' is defined but never used. Allowed unused args must match /^_/u  unused-imports/no-unused-vars
+
+C:\self_learning\project\solace-medusa-starter\src\modules\store\components\horizontal-filter-bar\index.tsx
+  106:5  error  Error: Calling setState synchronously within an effect can trigger cascading renders
+
+Effects are intended to synchronize state between React and external systems such as manually updating the DOM, state management libraries, or other platform APIs. In general, the body of an effect should do one or both of the following:
+* Update external systems with the latest state from React.
+* Subscribe for updates from some external system, calling setState in a callback function when external state changes.
+
+Calling setState synchronously within an effect body causes cascading renders that can hurt performance, and is not recommended. (https://react.dev/learn/you-might-not-need-an-effect).
+
+C:\self_learning\project\solace-medusa-starter\src\modules\store\components\horizontal-filter-bar\index.tsx:106:5
+  104 |
+  105 |   useEffect(() => {
+> 106 |     setValue(searchParams.get('q') ?? '')
+      |     ^^^^^^^^ Avoid calling setState() directly within an effect
+  107 |   }, [searchParams])
+  108 |
+  109 |   const pushSearch = useCallback(  react-hooks/set-state-in-effect
+
+Ô£û 111 problems (59 errors, 52 warnings)
+  1 error and 12 warnings potentially fixable with the `--fix` option.
+
