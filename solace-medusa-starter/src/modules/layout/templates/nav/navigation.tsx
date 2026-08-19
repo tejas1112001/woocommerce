@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation'
 import { createNavigation } from '@lib/constants'
 import { cn } from '@lib/util/cn'
 import { formatNameForTestId } from '@lib/util/formatNameForTestId'
+import { getLocalizedPath } from '@lib/util/urls'
 import { StoreCollection, StoreProductCategory } from '@medusajs/types'
 import { Box } from '@modules/common/components/box'
 import { NavigationItem } from '@modules/common/components/navigation-item'
@@ -36,10 +37,11 @@ export default function Navigation({
       {navigation.map((item: any, index: number) => {
         const handle = item.name.toLowerCase().replace(/\s+/g, '-')
         const isCategories =
-          handle === 'shop' && pathname.includes(`/${countryCode}/categories`)
+          handle === 'shop' && pathname.includes('/categories')
+        const itemLocalizedPath = getLocalizedPath(item.handle, countryCode)
         const active =
           item.handle !== '/shop' &&
-          pathname.includes(`/${countryCode}${item.handle}`)
+          (pathname.includes(itemLocalizedPath) || pathname.includes(item.handle))
 
         const isActive = active || isCategories
 
@@ -62,7 +64,7 @@ export default function Navigation({
               data-testid={formatNameForTestId(`${item.name}-dropdown`)}
             >
               <NavigationItem
-                href={`/${countryCode}${item.handle}`}
+                href={itemLocalizedPath}
                 className={cn(
                   'relative !px-5 !py-2.5 text-[15px] large:text-base font-semibold tracking-wide transition-colors duration-150',
                   isActive

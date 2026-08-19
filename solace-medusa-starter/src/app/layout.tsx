@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import { Poppins } from 'next/font/google'
 
 import { getBaseURL } from '@lib/util/env'
 import { JsonLd } from '@modules/common/components/json-ld'
@@ -7,6 +8,13 @@ import { ThemeProvider } from '@modules/common/components/theme-provider'
 import { Toaster } from 'sonner'
 
 import 'styles/globals.css'
+
+const poppins = Poppins({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700', '800'],
+  variable: '--font-poppins',
+  display: 'swap',
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
@@ -17,9 +25,11 @@ export const metadata: Metadata = {
   description:
     'Shop authentic Shree Swami Samarth devotional products from Akkalkot. Kurtas, dhotis, shawls, T-shirts, topis & frames. Wholesale & retail Pan-India.',
   icons: {
-    icon: '/favicon/favicon.ico',
-    shortcut: '/favicon/favicon.ico',
-    apple: '/favicon/favicon.ico',
+    icon: [
+      { url: '/favicon/favicon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon/favicon.png',
+    apple: '/favicon/favicon.png',
   },
   openGraph: {
     type: 'website',
@@ -93,8 +103,8 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   }
 
   return (
-    <html lang="en" suppressHydrationWarning>
-      <body className="text-basic-primary">
+    <html lang="en" className={poppins.variable} suppressHydrationWarning>
+      <body className={`${poppins.className} font-sans text-basic-primary`}>
         <JsonLd id="jsonld-organization-website" data={[organizationSchema, websiteSchema]} />
         <ThemeProvider
           attribute="class"

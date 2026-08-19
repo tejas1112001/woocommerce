@@ -1,15 +1,18 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
 @layer base {
   html {
+    font-family: 'Poppins', var(--font-poppins), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     /* Prevent horizontal scroll that can be triggered by the full-width
        fixed mega-menu panel or any element that momentarily overflows. */
     overflow-x: hidden;
   }
 
   body {
+    font-family: 'Poppins', var(--font-poppins), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     @apply bg-primary;
     scroll-behavior: smooth;
   }

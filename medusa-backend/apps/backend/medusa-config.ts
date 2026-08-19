@@ -24,6 +24,12 @@ if (nodeEnv === 'production' && existsSync(productionEnvPath)) {
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
+    databaseDriverOptions: {
+      pool: {
+        min: 2,
+        max: 10,
+      },
+    },
     redisUrl: process.env.REDIS_URL,
     http: {
       storeCors: process.env.STORE_CORS!,
@@ -37,6 +43,20 @@ module.exports = defineConfig({
   modules: [
     {
       resolve: "./src/modules/store-settings",
+    },
+    {
+      resolve: "@medusajs/medusa/file",
+      options: {
+        providers: [
+          {
+            resolve: "@medusajs/medusa/file-local",
+            id: "local",
+            options: {
+              backend_url: `${process.env.BACKEND_URL}/static`,
+            },
+          },
+        ],
+      },
     },
     {
       resolve: "@medusajs/medusa/payment",

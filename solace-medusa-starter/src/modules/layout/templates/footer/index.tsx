@@ -93,36 +93,72 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
   const footerNavigation = createFooterNavigation(product_categories)
 
   return (
-    <footer className="bg-[#0A0A0A] border-t border-white/5">
-      <Container className="px-6 py-16 medium:py-20">
+    <footer className="relative bg-[#0A0A0A] border-t border-amber-500/20 text-gray-300 overflow-hidden">
+      {/* Top Saffron/Gold Accent Line */}
+      <div className="h-1 bg-gradient-to-r from-amber-600 via-orange-500 to-amber-600 w-full" />
+
+      <Container className="px-4 sm:px-6 py-12 sm:py-16 medium:py-20">
+        {/* Devotional Banner Ribbon */}
+        <div className="border-b border-white/10 pb-8 mb-10 sm:mb-14 flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
+          <div className="flex flex-col sm:flex-row items-center gap-3">
+            <span className="text-amber-400 text-xl hidden sm:inline">✦</span>
+            <div>
+              <p className="text-amber-400 font-extrabold text-base tracking-widest uppercase">
+                ॥ श्री स्वामी समर्थ ॥
+              </p>
+              <p className="text-gray-400 text-xs sm:text-sm mt-0.5 font-medium">
+                अक्कलकोट स्वामी समर्थ महाराजांचे अधिकृत व विश्वासू दालन — स्वामी ओम एन्टरप्रायझेस
+              </p>
+            </div>
+          </div>
+          <div className="flex items-center gap-2 bg-amber-500/10 px-4 py-2 rounded-full border border-amber-500/30 text-xs text-amber-300 font-semibold shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            Pan-India Shipping • Fast Maharashtra Delivery
+          </div>
+        </div>
+
         {/* Main Footer Grid - 4 columns on desktop, 2 on tablet, 1 on mobile */}
-        <div className="grid grid-cols-1 gap-12 medium:grid-cols-2 large:grid-cols-4 large:gap-8 xl:gap-12">
+        <div className="grid grid-cols-1 gap-10 medium:grid-cols-2 large:grid-cols-4 large:gap-8 xl:gap-12">
           {/* Brand Column */}
-          <div className="flex flex-col gap-6 large:col-span-1">
+          <div className="flex flex-col gap-5 large:col-span-1 text-center sm:text-left">
             <LocalizedClientLink
               href="/"
-              className="group inline-flex w-max transition-transform duration-300 hover:scale-105"
+              className="group inline-flex w-max mx-auto sm:mx-0 transition-transform duration-300 hover:scale-105"
             >
               <div className="flex items-center gap-2">
                 <TejasLogo className="h-12 medium:h-14 text-white" />
               </div>
             </LocalizedClientLink>
-            <Text className="text-sm leading-relaxed text-gray-400 max-w-xs">
+            <Text className="text-xs sm:text-sm leading-relaxed text-gray-400 max-w-sm mx-auto sm:mx-0">
               Swami Om Enterprises — your trusted store for authentic Shree Swami Samarth devotional products from Akkalkot, Solapur. Serving retail and wholesale customers across Maharashtra and India.
             </Text>
-            <SocialMedia />
+            
+            {/* Trust Badges */}
+            <div className="flex flex-col gap-1.5 text-xs text-amber-300/90 font-medium">
+              <span className="flex items-center justify-center sm:justify-start gap-2">
+                <span className="text-amber-400">✓</span> 100% Authentic Akkalkot Devotional Items
+              </span>
+              <span className="flex items-center justify-center sm:justify-start gap-2">
+                <span className="text-amber-400">✓</span> Wholesale & Retail Orders Welcome
+              </span>
+            </div>
+
+            <div className="flex justify-center sm:justify-start pt-1">
+              <SocialMedia />
+            </div>
           </div>
 
           {/* Navigation Columns */}
           {footerNavigation.navigation.map((section, index) => (
-            <div key={`footer-section-${index}`} className="flex flex-col gap-5">
+            <div key={`footer-section-${index}`} className="flex flex-col gap-4 text-center sm:text-left">
               <Heading
                 as="h3"
-                className="text-base font-semibold text-white tracking-wide"
+                className="text-sm font-bold text-amber-400 tracking-wider uppercase flex items-center justify-center sm:justify-start gap-2"
               >
+                <span className="text-amber-500/70 text-xs">✦</span>
                 {section.header}
               </Heading>
-              <nav className="flex flex-col gap-3">
+              <nav className="flex flex-col gap-2.5">
                 {section.links.map((link, linkIndex) => (
                   <FooterLink
                     key={`${index}-link-${linkIndex}`}
@@ -138,21 +174,21 @@ export default async function Footer({ countryCode }: { countryCode: string }) {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-16 pt-8 border-t border-white/5">
-          <div className="flex flex-col gap-6 medium:flex-row medium:items-center medium:justify-between">
+        <div className="mt-12 sm:mt-16 pt-8 border-t border-white/10">
+          <div className="flex flex-col gap-4 medium:flex-row medium:items-center medium:justify-between text-center sm:text-left">
             {/* Copyright */}
-            <Text className="text-sm text-gray-500">
-              © {new Date().getFullYear()} Swami Om Enterprises. All rights reserved.
+            <Text className="text-xs sm:text-sm text-gray-500">
+              © {new Date().getFullYear()} Swami Om Enterprises. All rights reserved. | Built for Swami Samarth Devotees.
             </Text>
 
             {/* Legal Links */}
-            <nav className="flex flex-wrap gap-6">
+            <nav className="flex flex-wrap justify-center sm:justify-start gap-5">
               {footerNavigation.other.map((link, index) => (
                 <LocalizedClientLink
                   key={`legal-${index}`}
                   href={link.href}
                   data-testid={formatNameForTestId(`${link.title}-link`)}
-                  className="text-sm text-gray-500 transition-colors duration-300 hover:text-[#D4AF37]"
+                  className="text-xs sm:text-sm text-gray-500 transition-colors duration-300 hover:text-[#D4AF37]"
                 >
                   {link.title}
                 </LocalizedClientLink>

@@ -8,6 +8,7 @@ import {
   useSearchParams,
 } from 'next/navigation'
 
+import { getLocalizedPath } from '@lib/util/urls'
 import ForgotPassword from '@modules/account/components/forgot-password'
 import Login from '@modules/account/components/login'
 import Register from '@modules/account/components/register'
@@ -46,11 +47,11 @@ const LoginTemplate = () => {
 
   useEffect(() => {
     if (mode) {
-      const countryCode = params.countryCode ?? ''
+      const countryCode = (params.countryCode as string) ?? ''
       const query = redirectToParam
         ? `?redirectTo=${encodeURIComponent(redirectToParam)}`
         : ''
-      const newUrl = `/${countryCode}/account${query}`
+      const newUrl = getLocalizedPath(`/account${query}`, countryCode)
       router.replace(newUrl)
     }
   }, [mode, params.countryCode, redirectToParam, router])

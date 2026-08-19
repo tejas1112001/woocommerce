@@ -1,6 +1,8 @@
 const defaultTheme = require('tailwindcss/defaultTheme')
 
-const fontFamily = { sans: ['Inter', ...defaultTheme.fontFamily.sans] }
+const fontFamily = {
+  sans: ['var(--font-poppins)', 'Poppins', ...defaultTheme.fontFamily.sans],
+}
 
 const fontSize = {
   sm: ['0.75rem', { lineHeight: '1.25rem' }],

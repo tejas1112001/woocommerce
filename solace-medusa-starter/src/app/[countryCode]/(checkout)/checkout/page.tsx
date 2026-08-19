@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation'
 
 import { enrichLineItems, retrieveCart } from '@lib/data/cart'
 import { getCustomer } from '@lib/data/customer'
+import { getLocalizedPath } from '@lib/util/urls'
 import Wrapper from '@modules/checkout/components/payment-wrapper'
 import CheckoutForm from '@modules/checkout/templates/checkout-form'
 import CheckoutSummary from '@modules/checkout/templates/checkout-summary'
@@ -50,14 +51,17 @@ export default async function Checkout(props: {
   if (!customer) {
     // Build a redirectTo param so the login page can return the user here after
     // successful authentication.
-    const checkoutPath = `/${countryCode}/checkout`
+    const checkoutPath = getLocalizedPath('/checkout', countryCode)
     const step = searchParams?.step
     const fullCheckoutPath = step
       ? `${checkoutPath}?step=${step}`
       : checkoutPath
 
     redirect(
-      `/${countryCode}/account?redirectTo=${encodeURIComponent(fullCheckoutPath)}`
+      getLocalizedPath(
+        `/account?redirectTo=${encodeURIComponent(fullCheckoutPath)}`,
+        countryCode
+      )
     )
   }
   // ── End Checkout Guard ────────────────────────────────────────────────────
@@ -67,7 +71,7 @@ export default async function Checkout(props: {
   // If no cart exists, redirect to cart page instead of showing 404
   // This handles the case where cart was just completed or expired
   if (!cart) {
-    redirect(`/${countryCode}/cart`)
+    redirect(getLocalizedPath('/cart', countryCode))
   }
 
   return (

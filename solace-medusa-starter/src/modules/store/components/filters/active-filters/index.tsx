@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { FILTER_KEYS } from '@lib/constants'
 import { useActiveFilterHandles } from '@lib/hooks/use-active-filter-handle'
 import { useClearFiltersUrl } from '@lib/hooks/use-clear-filters-url'
+import { getLocalizedPath } from '@lib/util/urls'
 import { StoreCollection, StoreProductCategory } from '@medusajs/types'
 import { Box } from '@modules/common/components/box'
 import { PRICING_OPTIONS } from '@modules/search/const'
@@ -84,13 +85,15 @@ export default function ActiveProductFilters({
       params.delete(key)
     }
 
-    const basePath = currentQuery
-      ? `/${countryCode}/results/${currentQuery}`
+    const rawPath = currentQuery
+      ? `/results/${currentQuery}`
       : currentCategory
-        ? `/${countryCode}/categories/${currentCategory.handle}`
+        ? `/categories/${currentCategory.handle}`
         : currentCollection
-          ? `/${countryCode}/collections/${currentCollection.handle}`
-          : `/${countryCode}/shop`
+          ? `/collections/${currentCollection.handle}`
+          : `/shop`
+
+    const basePath = getLocalizedPath(rawPath, countryCode)
 
     router.push(
       params.toString() ? `${basePath}?${params.toString()}` : `${basePath}`

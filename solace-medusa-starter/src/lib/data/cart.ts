@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 
 import { sdk } from '@lib/config'
 import medusaError from '@lib/util/medusa-error'
+import { getLocalizedPath } from '@lib/util/urls'
 import { HttpTypes } from '@medusajs/types'
 import { omit } from 'lodash'
 
@@ -476,11 +477,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
   const rawCountryCode = (formData.get('shipping_address.country_code') as string) || ''
   const countryCode = rawCountryCode.toLowerCase()
 
-  redirect(
-    countryCode
-      ? `/${countryCode}/checkout?step=delivery`
-      : '/checkout?step=delivery'
-  )
+  redirect(getLocalizedPath('/checkout?step=delivery', countryCode))
 }
 
 export async function placeOrder() {
@@ -563,5 +560,5 @@ export async function updateRegion(countryCode: string, currentPath: string) {
   revalidateTag('regions', 'max')
   revalidateTag('products', 'max')
 
-  redirect(`/${countryCode}${currentPath}`)
+  redirect(getLocalizedPath(currentPath, countryCode))
 }

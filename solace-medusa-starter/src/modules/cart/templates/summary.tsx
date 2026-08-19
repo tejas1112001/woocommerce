@@ -2,6 +2,7 @@
 
 import { useParams } from 'next/navigation'
 
+import { getLocalizedPath } from '@lib/util/urls'
 import { HttpTypes } from '@medusajs/types'
 import DiscountCode from '@modules/checkout/components/discount-code'
 import { Box } from '@modules/common/components/box'
@@ -37,13 +38,15 @@ const Summary = ({ cart, customer }: SummaryProps) => {
 
   // The full checkout URL the user is trying to reach.
   const checkoutHref = `/checkout?step=${step}`
+  const checkoutUrl = getLocalizedPath(checkoutHref, countryCode as string)
 
   // When a guest clicks "Proceed to checkout", redirect them to the login page
   // with a `redirectTo` param. After successful auth the login/signup server
   // actions will send the customer back to the checkout URL automatically.
-  const loginHref = `/account?redirectTo=${encodeURIComponent(
-    `/${countryCode}${checkoutHref}`
-  )}`
+  const loginHref = getLocalizedPath(
+    `/account?redirectTo=${encodeURIComponent(checkoutUrl)}`,
+    countryCode as string
+  )
 
   return (
     <Box className="flex w-full flex-col gap-2 large:w-[326px] xl:w-[437px]">

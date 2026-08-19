@@ -4,6 +4,7 @@ import React, { useState, useContext } from 'react'
 
 import { isManual, isPaypal, isRazorpay, isStripe } from '@lib/constants'
 import { placeOrder } from '@lib/data/cart'
+import { getLocalizedPath } from '@lib/util/urls'
 import { HttpTypes } from '@medusajs/types'
 import { Button } from '@modules/common/components/button'
 import { Spinner } from '@modules/common/icons'
@@ -204,7 +205,7 @@ const StripePaymentButton = ({
           elements,
           redirect: 'if_required',
           confirmParams: {
-            return_url: `${window.location.origin}/${countryCode}/order/confirmed/${cart.id}`,
+            return_url: `${window.location.origin}${getLocalizedPath(`/order/confirmed/${cart.id}`, countryCode)}`,
           },
         })
         .then(async ({ error }) => {

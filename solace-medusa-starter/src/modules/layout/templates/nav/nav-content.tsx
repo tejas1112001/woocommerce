@@ -36,8 +36,8 @@ export default function NavContent(props: any) {
         <LocalizedClientLink href="/" aria-label="Go to homepage" className="flex items-center">
           <TejasLogo
             className={cn(
-              'h-12 w-auto transition-opacity hover:opacity-85',
-              'medium:h-14 large:h-[60px]'
+              'h-14 w-auto transition-opacity hover:opacity-85',
+              'medium:h-[58px] large:h-[62px]'
             )}
           />
         </LocalizedClientLink>

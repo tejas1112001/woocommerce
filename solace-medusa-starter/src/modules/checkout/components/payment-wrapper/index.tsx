@@ -3,6 +3,7 @@
 import React, { createContext, useCallback } from 'react'
 
 import { isPaypal, isStripe } from '@lib/constants'
+import { getLocalizedPath } from '@lib/util/urls'
 import { HttpTypes } from '@medusajs/types'
 import { PayPalScriptProvider } from '@paypal/react-paypal-js'
 import { loadStripe } from '@stripe/stripe-js'
@@ -37,7 +38,7 @@ const Wrapper: React.FC<WrapperProps> = ({ cart, children }) => {
   // re-render of checkout/page.tsx → fetchCart() returns null → notFound().
   const onOrderCompleted = useCallback(
     (order: any) => {
-      router.push(`/${countryCode}/order/confirmed/${order.id}`)
+      router.push(getLocalizedPath(`/order/confirmed/${order.id}`, countryCode))
     },
     [router, countryCode]
   )

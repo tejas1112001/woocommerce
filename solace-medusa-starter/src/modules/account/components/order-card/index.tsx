@@ -1,6 +1,7 @@
 import { getFulfillmentStatus, getOrderStatus } from '@lib/util/format-order'
 import { getPaymentStatusLabel } from '@lib/constants'
 import { convertToLocale } from '@lib/util/money'
+import { getLocalizedPath } from '@lib/util/urls'
 import { HttpTypes } from '@medusajs/types'
 import { Badge } from '@modules/common/components/badge'
 import { Box } from '@modules/common/components/box'
@@ -91,14 +92,14 @@ export default function OrderCard({
             <Thumbnail
               key={index}
               thumbnail={item.thumbnail || (item as any).variant?.product?.thumbnail || (item as any).variant?.thumbnail}
-              href={`/${countryCode}/products/${item.product_handle}`}
+              href={getLocalizedPath(`/products/${item.product_handle}`, countryCode)}
               size="big"
             />
           ))}
           {order.items.length > 3 && (
             <Thumbnail
               more={`+${order.items.length - 3}`}
-              href={`/${countryCode}/account/orders/details/${order.id}`}
+              href={getLocalizedPath(`/account/orders/details/${order.id}`, countryCode)}
               size="big"
             />
           )}

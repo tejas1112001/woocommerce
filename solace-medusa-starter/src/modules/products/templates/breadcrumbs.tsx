@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 
+import { getLocalizedPath } from '@lib/util/urls'
 import { StoreProduct } from '@medusajs/types'
 import {
   Breadcrumbs,
@@ -30,7 +31,7 @@ export default function ProductBreadcrumbs({
               <BreadcrumbsSeparator />
               <BreadcrumbsItem key={category.id}>
                 <BreadcrumbsLink
-                  href={`/${countryCode}/categories/${category.handle}`}
+                  href={getLocalizedPath(`/categories/${category.handle}`, countryCode)}
                 >
                   {category.name}
                 </BreadcrumbsLink>
@@ -46,7 +47,7 @@ export default function ProductBreadcrumbs({
           <BreadcrumbsItem>
             {product?.categories?.length > 0 && (
               <BreadcrumbsLink
-                href={`/${countryCode}/categories/${product.categories[product.categories.length - 1].handle}`}
+                href={getLocalizedPath(`/categories/${product.categories[product.categories.length - 1].handle}`, countryCode)}
                 className="flex items-center gap-2 text-md"
               >
                 <ArrowLeftIcon className="h-[18px] w-[18px]" />

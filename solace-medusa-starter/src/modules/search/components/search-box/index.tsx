@@ -2,6 +2,7 @@
 
 import React, { FormEvent, useEffect, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
+import { getLocalizedPath } from '@lib/util/urls'
 
 import { XMarkMini } from '@medusajs/icons'
 import { Box } from '@modules/common/components/box'
@@ -33,7 +34,7 @@ export const ControlledSearchBox = ({
         'recentSearches',
         JSON.stringify(Array.from(updatedSearches).slice(0, 5))
       )
-      router.push(`/${countryCode}/results/${query}`)
+      router.push(getLocalizedPath(`/results/${query}`, countryCode))
     }
     inputRef.current.blur()
     setQuery('')

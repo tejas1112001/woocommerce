@@ -3,7 +3,7 @@ import type { HttpTypes } from '@medusajs/types'
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL
 const PUBLISHABLE_API_KEY = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
-const DEFAULT_REGION = process.env.NEXT_PUBLIC_DEFAULT_REGION || 'us'
+const DEFAULT_REGION = (process.env.NEXT_PUBLIC_DEFAULT_REGION || 'in').toLowerCase()
 
 const regionMapCache = {
   regionMap: new Map<string, HttpTypes.StoreRegion>(),
@@ -109,13 +109,7 @@ function getCountryCode(
 }
 
 /**
- * Proxy to handle region selection and onboarding status.
- *
- * AUTHENTICATED CHECKOUT GUARD:
- * The checkout route (/[countryCode]/checkout) is protected — only authenticated
- * customers (those with a valid _medusa_jwt cookie) may access it.
- * Unauthenticated visitors are redirected to the account/login page with a
- * `redirectTo` query param so they are sent back to checkout after signing in.
+ * Proxy to handle region selection, onboarding status, and clean URLs.
  */
 export async function proxy(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -125,86 +119,72 @@ export async function proxy(request: NextRequest) {
   const onboardingCookie = request.cookies.get('_medusa_onboarding')
   const cartIdCookie = request.cookies.get('_medusa_cart_id')
 
-  // ── Authenticated Checkout Guard ──────────────────────────────────────────
-  // Check if the request targets the checkout route (any country-prefixed path).
-  // Matches: /in/checkout, /us/checkout, /in/checkout?step=delivery, etc.
-  const checkoutPathRegex = /^\/[a-z]{2}\/checkout(\/|$|\?)/
+  const regionMap = await getRegionMap()
+  const countryCode =
+    (regionMap && (await getCountryCode(request, regionMap))) || DEFAULT_REGION
+  const defaultRegion = DEFAULT_REGION.toLowerCase()
+
+  const firstSegment = request.nextUrl.pathname.split('/')[1]?.toLowerCase()
+  const urlHasCountryCode = firstSegment ? regionMap.has(firstSegment) : false
+
+  // 1. If URL explicitly contains default country code (e.g. /in/shop), 301 redirect to clean URL (/shop)
+  if (urlHasCountryCode && firstSegment === defaultRegion) {
+    let cleanPath = request.nextUrl.pathname.slice(defaultRegion.length + 1)
+    if (!cleanPath.startsWith('/')) {
+      cleanPath = `/${cleanPath}`
+    }
+    const redirectUrl = new URL(
+      `${cleanPath === '' ? '/' : cleanPath}${request.nextUrl.search}`,
+      request.nextUrl.origin
+    )
+    return NextResponse.redirect(redirectUrl, 301)
+  }
+
+  // 2. Authenticated Checkout Guard
+  const checkoutPathRegex = /^\/([a-z]{2}\/)?checkout(\/|$|\?)/
   const isCheckoutRoute =
     checkoutPathRegex.test(request.nextUrl.pathname) ||
     request.nextUrl.pathname.endsWith('/checkout')
 
   if (isCheckoutRoute) {
-    // Guests have no _medusa_jwt cookie — redirect them to the login page.
     const authToken = request.cookies.get('_medusa_jwt')?.value
 
     if (!authToken) {
-      // Preserve the full checkout URL (including ?step=…) so we can redirect
-      // back after successful authentication.
-      const checkoutPath =
-        request.nextUrl.pathname + request.nextUrl.search
-
-      // Derive the country-code prefix from the URL so the login URL stays
-      // within the same region (e.g. /in/account?redirectTo=…).
-      const countryPrefix = request.nextUrl.pathname.split('/')[1] || ''
-      const loginUrl = new URL(
-        `/${countryPrefix}/account`,
-        request.nextUrl.origin
-      )
+      const checkoutPath = request.nextUrl.pathname + request.nextUrl.search
+      const loginPath =
+        countryCode === defaultRegion ? '/account' : `/${countryCode}/account`
+      const loginUrl = new URL(loginPath, request.nextUrl.origin)
       loginUrl.searchParams.set('redirectTo', checkoutPath)
 
       return NextResponse.redirect(loginUrl, 307)
     }
   }
-  // ── End Checkout Guard ────────────────────────────────────────────────────
 
-  const regionMap = await getRegionMap()
-
-  const countryCode = regionMap && (await getCountryCode(request, regionMap))
-
-  const urlHasCountryCode =
-    countryCode && request.nextUrl.pathname.split('/')[1].includes(countryCode)
-
-  // check if one of the country codes is in the url
-  if (
-    urlHasCountryCode &&
-    (!isOnboarding || onboardingCookie) &&
-    (!cartId || cartIdCookie)
-  ) {
-    return NextResponse.next()
-  }
-
-  const firstSegment = request.nextUrl.pathname.split('/')[1]
-  const isTwoLetterCode = /^[a-zA-Z]{2}$/.test(firstSegment ?? '')
-
-  let cleanedPath = request.nextUrl.pathname
-  if (isTwoLetterCode && !urlHasCountryCode) {
-    cleanedPath = request.nextUrl.pathname.replace(`/${firstSegment}`, '')
-  }
-
-  const redirectPath =
-    cleanedPath === '/' || cleanedPath === '' ? '' : cleanedPath
-
-  const queryString = request.nextUrl.search ? request.nextUrl.search : ''
-
-  let response = NextResponse.next()
-  let redirectUrl = `${request.nextUrl.origin}/${countryCode}${redirectPath}${queryString}`
-
-  // If no country code is set, we redirect to the relevant region.
-  if (!urlHasCountryCode && countryCode) {
-    if (redirectUrl !== request.nextUrl.href) {
-      response = NextResponse.redirect(redirectUrl, 307)
+  // 3. Handle non-default country code in URL (e.g. /us/shop)
+  if (urlHasCountryCode && firstSegment !== defaultRegion) {
+    if (
+      (!isOnboarding || onboardingCookie) &&
+      (!cartId || cartIdCookie)
+    ) {
+      return NextResponse.next()
     }
   }
 
-  // If a cart_id is in the params, we set it as a cookie and redirect to the address step.
+  // 4. Internal Rewrite for clean URLs (e.g. /shop -> /in/shop behind the scenes)
+  let response = NextResponse.next()
+
+  if (!urlHasCountryCode) {
+    const internalUrl = new URL(
+      `/${countryCode}${request.nextUrl.pathname}${request.nextUrl.search}`,
+      request.nextUrl.origin
+    )
+    response = NextResponse.rewrite(internalUrl)
+  }
+
   if (cartId && !checkoutStep) {
-    const separator = redirectUrl.includes('?') ? '&' : '?'
-    redirectUrl = `${redirectUrl}${separator}step=address`
-    response = NextResponse.redirect(redirectUrl, 307)
     response.cookies.set('_medusa_cart_id', cartId, { maxAge: 60 * 60 * 24 })
   }
 
-  // Set a cookie to indicate that we're onboarding. This is used to show the onboarding flow.
   if (isOnboarding) {
     response.cookies.set('_medusa_onboarding', 'true', {
       maxAge: 60 * 60 * 24,

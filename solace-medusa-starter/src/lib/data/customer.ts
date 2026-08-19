@@ -4,6 +4,7 @@ import { revalidateTag } from 'next/cache'
 import { redirect } from 'next/navigation'
 
 import { sdk } from '@lib/config'
+import { getLocalizedPath } from '@lib/util/urls'
 
 import { getAuthHeaders, removeAuthToken, setAuthToken, removeCartId } from './cookies'
 
@@ -240,7 +241,7 @@ export async function signout(countryCode: string) {
   revalidateTag('auth', 'max')
   revalidateTag('customer', 'max')
   revalidateTag('cart', 'max')
-  redirect(`/${countryCode}/account`)
+  redirect(getLocalizedPath('/account', countryCode))
 }
 
 export const addCustomerAddress = async (
