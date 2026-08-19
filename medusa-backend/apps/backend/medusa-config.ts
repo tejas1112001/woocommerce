@@ -77,13 +77,14 @@ module.exports = defineConfig({
                 process.env.RAZORPAY_TEST_ACCOUNT || process.env.RAZORPAY_ACCOUNT || undefined,
               automatic_expiry_period:
                 process.env.RAZORPAY_TEST_AUTO_EXPIRY_PERIOD ??
-                process.env.RAZORPAY_AUTO_EXPIRY_PERIOD,
+                process.env.RAZORPAY_AUTO_EXPIRY_PERIOD ?? 30,
               manual_expiry_period:
                 process.env.RAZORPAY_TEST_MANUAL_EXPIRY_PERIOD ??
-                process.env.RAZORPAY_MANUAL_EXPIRY_PERIOD,
+                process.env.RAZORPAY_MANUAL_EXPIRY_PERIOD ?? 7200,
               webhook_secret:
                 process.env.RAZORPAY_TEST_WEBHOOK_SECRET ??
-                process.env.RAZORPAY_WEBHOOK_SECRET,
+                process.env.RAZORPAY_WEBHOOK_SECRET ??
+                "local_dev_webhook_secret",
               // Enable automatic payment capture
               // When true, payments are automatically captured after authorization
               // This removes the need for manual "Capture Payment" in admin

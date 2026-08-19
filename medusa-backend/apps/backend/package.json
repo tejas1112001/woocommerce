@@ -14,7 +14,7 @@
   ],
   "scripts": {
     "build": "medusa build",
-    "postbuild": "cp .env .medusa/server/.env && cp .env.production .medusa/server/.env.production && ln -sfn ../../static .medusa/server/static",
+    "postbuild": "node scripts/postbuild.js",
     "start": "medusa start",
     "dev": "medusa develop",
     "test:integration:http": "TEST_TYPE=integration:http NODE_OPTIONS=--experimental-vm-modules jest --silent=false --runInBand --forceExit",

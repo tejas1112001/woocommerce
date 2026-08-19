@@ -23,13 +23,16 @@
     "swc": true
   },
   "include": [
-    "**/*",
+    "src/**/*",
+    "medusa-config.ts",
+    "instrumentation.ts",
     ".medusa/types/*"
   ],
   "exclude": [
     "node_modules",
     ".medusa/server",
     ".medusa/admin",
-    ".cache"
+    ".cache",
+    "src/scripts/**/*"
   ]
 }
