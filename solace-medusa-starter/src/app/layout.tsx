@@ -41,9 +41,9 @@ export const metadata: Metadata = {
       'Shop authentic Shree Swami Samarth devotional products from Akkalkot. Kurtas, dhotis, shawls, T-shirts, topis & frames. Wholesale & retail Pan-India.',
     images: [
       {
-        url: 'https://swamiomenterprises.in/logo/logo.png',
-        width: 800,
-        height: 600,
+        url: 'https://swamiomenterprises.in/og_image/og-image.png',
+        width: 1200,
+        height: 630,
         alt: 'Swami Om Enterprises - Shree Swami Samarth Devotional Store Akkalkot',
       },
     ],
@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     title: 'Shree Swami Samarth Products | Swami Om Enterprises',
     description:
       'Shop authentic Shree Swami Samarth devotional products from Akkalkot. Kurtas, dhotis, shawls, T-shirts, topis & frames.',
-    images: ['https://swamiomenterprises.in/logo/logo.png'],
+    images: ['https://swamiomenterprises.in/og_image/og-image.png'],
   },
 }
 

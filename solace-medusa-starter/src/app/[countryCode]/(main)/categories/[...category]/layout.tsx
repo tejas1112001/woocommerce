@@ -84,7 +84,9 @@ export async function generateMetadata(
       type: 'website',
       images: [
         {
-          url: 'https://swamiomenterprises.in/logo/logo.png',
+          url: 'https://swamiomenterprises.in/og_image/og-image.png',
+          width: 1200,
+          height: 630,
           alt: `Shree Swami Samarth ${categoryName} - Swami Om Enterprises`,
         },
       ],
