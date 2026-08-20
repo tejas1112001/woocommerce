@@ -101,7 +101,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
           ]
         : [
             {
-              url: 'https://swamiomenterprises.in/logo/logo.png',
+              url: 'https://swamiomenterprises.in/og_image/og-image.png',
+              width: 1200,
+              height: 630,
               alt: 'Swami Om Enterprises',
             },
           ],

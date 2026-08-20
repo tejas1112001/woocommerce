@@ -97,8 +97,15 @@ export const getProductsList = async function ({
     )
     .then(({ products }) => {
       const filteredProducts = products.filter((product) => {
+        if (!product.variants || product.variants.length === 0) {
+          return false
+        }
         if (product.variants.length === 1) {
-          return product.variants[0].inventory_quantity > 0
+          const variant = product.variants[0]
+          if (!variant.manage_inventory) {
+            return true
+          }
+          return (variant.inventory_quantity ?? 0) > 0
         }
         return product.variants.length > 1
       })
