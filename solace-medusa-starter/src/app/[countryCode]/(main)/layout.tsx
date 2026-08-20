@@ -8,9 +8,11 @@ import NavWrapper from '@modules/layout/templates/nav'
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
   icons: {
-    icon: '/favicon/favicon.ico',
-    shortcut: '/favicon/favicon.ico',
-    apple: '/favicon/favicon.ico',
+    icon: [
+      { url: '/favicon/favicon.png', type: 'image/png' },
+    ],
+    shortcut: '/favicon/favicon.png',
+    apple: '/favicon/favicon.png',
   },
 }
 

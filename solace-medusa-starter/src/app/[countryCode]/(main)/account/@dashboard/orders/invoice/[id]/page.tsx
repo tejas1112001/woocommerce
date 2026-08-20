@@ -48,7 +48,7 @@ export default async function InvoicePage(props: Props) {
   }
 
   const getAmount = (amount?: number | null) => {
-    if (amount === undefined || amount === null) return '—'
+    if (amount === undefined || amount === null) return '-'
     return convertToLocale({
       amount,
       currency_code: order.currency_code,

@@ -74,7 +74,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const rawDescription = product.description || product.title
   const cleanDescription =
     rawDescription.replace(/\s+/g, ' ').slice(0, 140).trim() +
-    ' — Buy online from Swami Om Enterprises with shipping across India.'
+    '. Buy online from Swami Om Enterprises with shipping across India.'
 
   const canonicalUrl = `https://swamiomenterprises.in/products/${handle}`
 
@@ -96,7 +96,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
               url: product.thumbnail.startsWith('http')
                 ? product.thumbnail
                 : `https://swamiomenterprises.in${product.thumbnail}`,
-              alt: `${product.title} - Shree Swami Samarth Devotional Product`,
+              alt: `${product.title} | Shree Swami Samarth Devotional Product`,
             },
           ]
         : [

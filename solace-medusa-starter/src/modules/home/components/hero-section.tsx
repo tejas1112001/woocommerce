@@ -18,8 +18,8 @@ const HeroSection: FC<Props> = ({ className = '' }) => {
   return (
     <section
       id="hero"
-      aria-label="Hero - Shree Swami Samarth Devotional Store"
-      className={`relative min-h-[calc(100vh-80px)] h-auto flex flex-col justify-center bg-gradient-to-b from-amber-50/90 via-orange-50/40 to-amber-50/80 border-b border-amber-200/50 py-4 sm:py-6 lg:py-8 ${className}`}
+      aria-label="Hero | Shree Swami Samarth Devotional Store"
+      className={`relative bg-gradient-to-b from-amber-50/90 via-orange-50/40 to-amber-50/80 border-b border-amber-200/50 py-8 sm:py-12 lg:py-16 ${className}`}
     >
       {/* Decorative background ambient glows (Pure CSS, pointer-events-none) */}
       <div className="absolute -top-32 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-amber-300/20 via-orange-400/15 to-transparent blur-3xl pointer-events-none rounded-full" />
@@ -108,7 +108,7 @@ const HeroSection: FC<Props> = ({ className = '' }) => {
               <div className="relative w-full aspect-square rounded-xl sm:rounded-2xl bg-gradient-to-b from-amber-50/70 to-orange-50/40 p-2.5 sm:p-4 flex items-center justify-center overflow-hidden border border-amber-100/80">
                 <Image
                   src="/Banner_Image/t-shirt.png"
-                  alt="Yellow printed devotional kurta for Swami Samarth puja - Swami Om Enterprises Akkalkot"
+                  alt="Yellow printed devotional kurta for Swami Samarth puja | Swami Om Enterprises Akkalkot"
                   width={450}
                   height={450}
                   priority={true}
