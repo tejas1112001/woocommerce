@@ -43,13 +43,13 @@ const ProfileDetails = ({
           <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/40 border border-neutral-100 dark:border-neutral-800">
             <Text className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">First name</Text>
             <Text className="font-semibold text-neutral-900 dark:text-white mt-1">
-              {customer.first_name || '—'}
+              {customer.first_name || '-'}
             </Text>
           </div>
           <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/40 border border-neutral-100 dark:border-neutral-800">
             <Text className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Last name</Text>
             <Text className="font-semibold text-neutral-900 dark:text-white mt-1">
-              {customer.last_name || '—'}
+              {customer.last_name || '-'}
             </Text>
           </div>
           <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/40 border border-neutral-100 dark:border-neutral-800">
@@ -61,7 +61,7 @@ const ProfileDetails = ({
           <div className="p-3.5 rounded-lg bg-neutral-50 dark:bg-neutral-800/40 border border-neutral-100 dark:border-neutral-800">
             <Text className="text-xs text-neutral-500 dark:text-neutral-400 font-medium">Phone number</Text>
             <Text className="font-semibold text-neutral-900 dark:text-white mt-1">
-              {customer.phone || '—'}
+              {customer.phone || '-'}
             </Text>
           </div>
         </div>

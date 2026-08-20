@@ -112,6 +112,12 @@ function getCountryCode(
  * Proxy to handle region selection, onboarding status, and clean URLs.
  */
 export async function proxy(request: NextRequest) {
+  const pathname = request.nextUrl.pathname
+
+  if (pathname === '/sitemap.xml' || pathname === '/robots.txt') {
+    return NextResponse.next()
+  }
+
   const searchParams = request.nextUrl.searchParams
   const isOnboarding = searchParams.get('onboarding') === 'true'
   const cartId = searchParams.get('cart_id')
@@ -195,5 +201,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|logo|favicon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)'],
+  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap\\.xml|robots\\.txt|logo|favicon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)'],
 }

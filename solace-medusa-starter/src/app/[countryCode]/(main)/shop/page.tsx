@@ -15,7 +15,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: 'Shree Swami Samarth Devotional Store | Swami Om Enterprises',
       description:
-        'Explore all devotional products including printed T-shirts, topis, kurtas, dhotis, and metal photo frames from Akkalkot.',
+        'Explore all devotional products including printed T-shirts, topis, kurtas, dhotis and metal photo frames from Akkalkot.',
       url: 'https://swamiomenterprises.in/shop',
       siteName: 'Swami Om Enterprises',
       type: 'website',
@@ -24,7 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
           url: 'https://swamiomenterprises.in/logo/logo.png',
           width: 800,
           height: 600,
-          alt: 'Swami Om Enterprises - Shree Swami Samarth Devotional Store',
+          alt: 'Swami Om Enterprises | Shree Swami Samarth Devotional Store',
         },
       ],
     },

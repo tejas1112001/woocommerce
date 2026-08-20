@@ -35,7 +35,7 @@ export default function OrderConfirmationModal({
   const countryCode = (params.countryCode as string) || 'in'
 
   const getAmount = (amount?: number | null) => {
-    if (amount === undefined || amount === null) return '—'
+    if (amount === undefined || amount === null) return '-'
     return convertToLocale({
       amount,
       currency_code: order.currency_code,

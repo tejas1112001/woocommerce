@@ -146,10 +146,10 @@ const ShippingInfoTab = () => {
   return (
     <ul className="list-disc pl-4 text-md text-secondary 2xl:pl-5">
       <li>
-        We ship across India. Orders are usually processed within 3–5 business days. No returns or exchanges are accepted once the order has been delivered.
+        We ship across India. Orders are usually processed within 3-5 business days. No returns or exchanges are accepted once the order has been delivered.
       </li>
       <li>
-        If you receive a damaged, defective, or incorrect product, please contact us within 24 hours of delivery with photos/videos of the product. Shipping charges are non-refundable.
+        If you receive a damaged, defective or incorrect product, please contact us within 24 hours of delivery with photos/videos of the product. Shipping charges are non-refundable.
       </li>
     </ul>
   )

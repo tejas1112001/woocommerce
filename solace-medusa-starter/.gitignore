@@ -30,6 +30,7 @@ build-debug.log
 # local env files
 .env
 .env*.local
+.env.production
 
 # vercel
 .vercel

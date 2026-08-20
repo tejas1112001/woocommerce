@@ -136,7 +136,7 @@ export function ResetPassword() {
               Set new password
             </Heading>
             <Text className="text-secondary" size="md">
-              Almost done. Enter your new password, and you&apos;re good to go.
+              Almost done. Enter your new password and you&apos;re good to go.
             </Text>
           </Box>
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>

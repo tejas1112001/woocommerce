@@ -229,24 +229,24 @@ export const createFooterNavigation = (
         ],
       },
       {
-        header: 'Orders',
+        header: 'Customer Care',
         links: [
           {
-            title: 'Orders and delivery',
-            href: '#',
+            title: 'Shipping & Delivery',
+            href: '/shipping-policy',
           },
           {
-            title: 'Returns and refunds',
-            href: '#',
+            title: 'Returns & Refunds',
+            href: '/return-policy',
           },
           {
-            title: 'Payment and pricing',
-            href: '#',
+            title: 'Wholesale & Bulk Orders',
+            href: '/wholesale',
           },
         ],
       },
       {
-        header: 'About',
+        header: 'About & Info',
         links: [
           {
             title: 'About us',
@@ -256,6 +256,10 @@ export const createFooterNavigation = (
             title: 'Contact us',
             href: '/contact',
           },
+          {
+            title: 'Thank You',
+            href: '/thank-you',
+          },
         ],
       },
     ],
@@ -263,7 +267,24 @@ export const createFooterNavigation = (
       header: "Let's stay in touch",
       text: 'Keep up to date with the latest product launches and news. Find out more about our brands and get special promo codes.',
     },
-    other: [],
+    other: [
+      {
+        title: 'Privacy Policy',
+        href: '/privacy-policy',
+      },
+      {
+        title: 'Terms & Conditions',
+        href: '/terms-and-conditions',
+      },
+      {
+        title: 'Shipping Policy',
+        href: '/shipping-policy',
+      },
+      {
+        title: 'Return Policy',
+        href: '/return-policy',
+      },
+    ],
   }
 }
 
