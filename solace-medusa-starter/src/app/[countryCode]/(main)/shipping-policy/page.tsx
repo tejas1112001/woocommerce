@@ -4,6 +4,10 @@ export const metadata: Metadata = {
   title: 'Shipping Policy | Pan-India Delivery | Swami Om Enterprises',
   description:
     'Read the Shipping Policy for Swami Om Enterprises Akkalkot store. Pan-India shipping, fast delivery across Maharashtra, packaging details and order tracking.',
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: 'https://swamiomenterprises.in/shipping-policy',
   },

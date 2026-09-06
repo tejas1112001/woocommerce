@@ -42,7 +42,7 @@ const AccountMobileNav = () => {
   }
 
   return (
-    <div className="w-full bg-primary border-b border-neutral-200 dark:border-neutral-800 xl:hidden py-2 px-3 relative group">
+    <div className="w-full bg-primary border-b border-neutral-200 dark:border-neutral-800 xl:hidden py-2 px-3 relative group print:hidden">
       {/* Left Fade & Arrow Hint */}
       {canScrollLeft && (
         <>

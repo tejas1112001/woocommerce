@@ -36,7 +36,7 @@ export default function CollectionCarousel({
 
   return (
     <div className="bg-white py-10 small:py-14">
-      <div className="mx-auto box-content max-w-[1328px] px-4 small:px-14">
+      <div className="mx-auto box-border max-w-[1328px] px-4 small:px-14">
 
         {/* ── Header row ─────────────────────────────── */}
         <div className="mb-6 flex items-start justify-between gap-4 small:mb-8">

@@ -4,6 +4,10 @@ export const metadata: Metadata = {
   title: 'Return & Refund Policy | Swami Om Enterprises',
   description:
     'Read the Return and Refund Policy for Swami Om Enterprises Akkalkot store. Learn about return eligibility, exchange policy, and refund processing.',
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: 'https://swamiomenterprises.in/return-policy',
   },

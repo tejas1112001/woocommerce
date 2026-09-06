@@ -1,11 +1,9 @@
 'use client'
 
 import {
-  startTransition,
-  useActionState,
-  useEffect,
   useMemo,
   useState,
+  useTransition,
 } from 'react'
 import { useSearchParams } from 'next/navigation'
 
@@ -26,18 +24,17 @@ import { CheckCircleIcon, XCircleIcon } from '@modules/common/icons'
 
 export function ResetPassword() {
   const searchParams = useSearchParams()
+  const [isPending, startTransition] = useTransition()
   const [passwordChanged, setPasswordChanged] = useState(false)
-  const [message, formAction] = useActionState(resetPassword, null)
-  const [localMessage, setLocalMessage] = useState(null)
-  const [validationErrors, setValidationErrors] = useState<ValidationError[]>(
-    []
-  )
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [validationErrors, setValidationErrors] = useState<ValidationError[]>([])
 
   const token = useMemo(() => {
-    return searchParams?.get('token')
+    return searchParams?.get('token') || ''
   }, [searchParams])
+
   const email = useMemo(() => {
-    return searchParams?.get('email')
+    return searchParams?.get('email') || ''
   }, [searchParams])
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -45,19 +42,19 @@ export function ResetPassword() {
     const form = event.currentTarget
     const formData = new FormData(form)
     const errors: ValidationError[] = []
-    const requiredFields = ['new_password', 'confirmed_password']
-    for (const field of requiredFields) {
-      if (!formData.get(field)) {
-        errors.push({
-          field,
-          message: 'Please enter new password',
-        })
-      }
-    }
+
     const newPassword = formData.get('new_password') as string
-    const isPasswordValid = validatePassword(newPassword)
     const confirmedPassword = formData.get('confirmed_password') as string
 
+    if (!newPassword) {
+      errors.push({ field: 'new_password', message: 'Please enter new password' })
+    }
+
+    if (!confirmedPassword) {
+      errors.push({ field: 'confirmed_password', message: 'Please confirm new password' })
+    }
+
+    const isPasswordValid = validatePassword(newPassword)
     if (isPasswordValid.length > 0) {
       isPasswordValid.forEach((requirement) => {
         errors.push({
@@ -67,7 +64,7 @@ export function ResetPassword() {
       })
     }
 
-    if (newPassword !== confirmedPassword) {
+    if (newPassword && confirmedPassword && newPassword !== confirmedPassword) {
       errors.push({
         field: 'confirmed_password',
         message: 'Passwords don’t match. Please enter correct password.',
@@ -78,67 +75,67 @@ export function ResetPassword() {
       setValidationErrors(errors)
       return
     }
+
+    setValidationErrors([])
+    setServerError(null)
+
     formData.append('email', email)
     formData.append('token', token)
-    startTransition(() => {
-      formAction(formData)
+
+    startTransition(async () => {
+      const res = await resetPassword(null, formData)
+      if (res && typeof res === 'string') {
+        setServerError(res)
+        toast('error', res)
+      } else {
+        // Password successfully updated in authentication system!
+        setPasswordChanged(true)
+        toast('success', 'Your password has been reset successfully!')
+      }
     })
-    setPasswordChanged(true)
   }
-
-  useEffect(() => {
-    if (message) {
-      setLocalMessage(message)
-      startTransition(() => {
-        formAction(new FormData())
-      })
-    }
-  }, [message, formAction])
-
-  useEffect(() => {
-    if (localMessage) {
-      toast(
-        'error',
-        'An error occurred while resetting the password. Please try again later.'
-      )
-      setLocalMessage(null)
-    }
-  }, [localMessage])
 
   return (
     <Box
       className={cn('flex w-full flex-col gap-6', {
         'max-w-[438px]': passwordChanged,
-        'bg-primary p-5 small:p-4': !passwordChanged,
+        'bg-primary p-5 small:p-4 rounded-2xl border border-gray-100 shadow-sm': !passwordChanged,
       })}
     >
-      {passwordChanged && !message ? (
+      {passwordChanged ? (
         <>
-          <CheckCircleIcon className="mx-auto h-14 w-14" />
-          <Box className="text-center">
-            <Heading className="mb-2 text-xl small:text-2xl">
+          <CheckCircleIcon className="mx-auto h-14 w-14 text-emerald-500" />
+          <Box className="text-center space-y-2">
+            <Heading className="text-xl small:text-2xl font-bold text-gray-900">
               Password changed
             </Heading>
-            <Text className="text-secondary" size="md">
-              Your are ready to log in with your new password
+            <Text className="text-gray-600 text-sm" size="md">
+              Your password has been updated in our authentication system. You are ready to log in with your new password.
             </Text>
           </Box>
-          <Button size="sm" asChild>
+          <Button size="sm" asChild className="w-full mt-2">
             <LocalizedClientLink href="/account?mode=sign-in">
-              Log in
+              Log in with New Password →
             </LocalizedClientLink>
           </Button>
         </>
       ) : (
         <>
           <Box>
-            <Heading className="mb-2 text-xl small:text-2xl">
+            <Heading className="mb-2 text-xl small:text-2xl font-bold text-gray-900">
               Set new password
             </Heading>
-            <Text className="text-secondary" size="md">
+            <Text className="text-gray-600 text-sm" size="md">
               Almost done. Enter your new password and you&apos;re good to go.
             </Text>
           </Box>
+
+          {serverError && (
+            <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-800 font-medium">
+              {serverError}
+            </div>
+          )}
+
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <Input
               label="New Password"
@@ -151,7 +148,7 @@ export function ResetPassword() {
                   ?.message
               }
             />
-            <Box className="flex flex-col gap-y-2 border border-basic-primary p-4">
+            <Box className="flex flex-col gap-y-2 border border-gray-200 rounded-xl p-4 bg-gray-50">
               {passwordRequirements.map((item, id) => {
                 const isValid = !validationErrors.some(
                   (error) => error.message === item
@@ -160,18 +157,18 @@ export function ResetPassword() {
                 return (
                   <Box
                     key={id}
-                    className={cn('flex items-center gap-2 text-secondary', {
-                      'border-negative': !isValid,
+                    className={cn('flex items-center gap-2 text-xs text-gray-600', {
+                      'text-red-600 font-semibold': !isValid,
                     })}
                   >
                     {isValid ? (
-                      <CheckCircleIcon />
+                      <CheckCircleIcon className="h-4 w-4 text-emerald-500" />
                     ) : (
-                      <XCircleIcon className="text-negative" />
+                      <XCircleIcon className="h-4 w-4 text-red-500" />
                     )}
                     <Label
                       size="sm"
-                      className={cn({ 'text-negative': !isValid })}
+                      className={cn({ 'text-red-600': !isValid })}
                     >
                       {item}
                     </Label>
@@ -191,7 +188,11 @@ export function ResetPassword() {
                 )?.message
               }
             />
-            <SubmitButton className="mt-6 w-full" data-testid="register-button">
+            <SubmitButton
+              className="mt-6 w-full"
+              data-testid="register-button"
+              isLoading={isPending}
+            >
               Set new password
             </SubmitButton>
           </form>

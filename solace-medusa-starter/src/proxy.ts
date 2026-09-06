@@ -146,6 +146,16 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(redirectUrl, 301)
   }
 
+  // 1.1 Reset Password Guard — redirect /account/reset-password to /[countryCode]/reset-password
+  if (request.nextUrl.pathname.includes('/account/reset-password')) {
+    const targetPath = request.nextUrl.pathname.replace('/account/reset-password', '/reset-password')
+    const finalPath = countryCode && !targetPath.startsWith(`/${countryCode}`)
+      ? `/${countryCode}${targetPath}`
+      : targetPath
+    const targetUrl = new URL(finalPath + request.nextUrl.search, request.nextUrl.origin)
+    return NextResponse.redirect(targetUrl, 307)
+  }
+
   // 2. Authenticated Checkout Guard
   const checkoutPathRegex = /^\/([a-z]{2}\/)?checkout(\/|$|\?)/
   const isCheckoutRoute =
@@ -163,6 +173,25 @@ export async function proxy(request: NextRequest) {
       loginUrl.searchParams.set('redirectTo', checkoutPath)
 
       return NextResponse.redirect(loginUrl, 307)
+    }
+  }
+
+  // 2.1 Authenticated Account Redirect Guard
+  const isAccountRoute =
+    /^\/([a-z]{2}\/)?account(\/|$|\?)/.test(request.nextUrl.pathname) ||
+    request.nextUrl.pathname.endsWith('/account')
+
+  if (isAccountRoute) {
+    const authToken = request.cookies.get('_medusa_jwt')?.value
+    const redirectToParam = searchParams.get('redirectTo')
+
+    if (authToken && redirectToParam) {
+      const cleanRedirectTo = decodeURIComponent(redirectToParam)
+      const targetPath = cleanRedirectTo.startsWith('/')
+        ? cleanRedirectTo
+        : `/${cleanRedirectTo}`
+      const redirectUrl = new URL(targetPath, request.nextUrl.origin)
+      return NextResponse.redirect(redirectUrl, 307)
     }
   }
 

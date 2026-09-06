@@ -7,8 +7,8 @@ import OrderOverview, {
 } from '@modules/account/components/order-overview'
 
 export const metadata: Metadata = {
-  title: 'Orders',
-  description: 'Overview of your previous orders.',
+  title: 'Order History & Status',
+  description: 'Track and view all your previous order receipts and delivery statuses at Swami Om Enterprises.',
 }
 
 type Props = {

@@ -3,11 +3,21 @@
 import React from 'react'
 import { useRouter } from 'next/navigation'
 
-export default function InvoiceActions() {
+type Props = {
+  displayId?: string | number
+}
+
+export default function InvoiceActions({ displayId }: Props) {
   const router = useRouter()
 
   const handlePrint = () => {
+    const prevTitle = document.title
+    const filename = `SwamiOmEnterprises_Invoice_INV_${displayId ?? ''}`
+    document.title = filename
     window.print()
+    setTimeout(() => {
+      document.title = prevTitle
+    }, 1000)
   }
 
   const handleBack = () => {

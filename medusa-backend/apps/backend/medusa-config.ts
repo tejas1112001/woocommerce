@@ -45,6 +45,9 @@ module.exports = defineConfig({
       resolve: "./src/modules/store-settings",
     },
     {
+      resolve: "./src/modules/otp-verification",
+    },
+    {
       resolve: "@medusajs/medusa/file",
       options: {
         providers: [
@@ -89,6 +92,34 @@ module.exports = defineConfig({
               // When true, payments are automatically captured after authorization
               // This removes the need for manual "Capture Payment" in admin
               auto_capture: true,
+            },
+          },
+        ],
+      },
+    },
+    {
+      // Notification module — uses only the custom smtp-notification provider
+      // which is installed and handles all email needs via direct nodemailer.
+      // Note: @perseidesjs/notification-nodemailer is NOT installed (not in
+      // package.json), so it is excluded to prevent a MODULE_NOT_FOUND crash.
+      resolve: "@medusajs/medusa/notification",
+      options: {
+        providers: [
+          {
+            resolve: "./src/modules/smtp-notification",
+            id: "smtp",
+            options: {
+              host: process.env.SMTP_HOST,
+              port: parseInt(process.env.SMTP_PORT || "587"),
+              secure: false,
+              auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASSWORD,
+              },
+              from: {
+                email: process.env.SMTP_FROM_EMAIL,
+                name: process.env.SMTP_FROM_NAME,
+              },
             },
           },
         ],

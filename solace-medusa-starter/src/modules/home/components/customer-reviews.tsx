@@ -54,7 +54,7 @@ export const CustomerReviews: FC = () => {
     <section
       id="customer-reviews"
       aria-label="Customer Reviews and Testimonials"
-      className="relative py-10 sm:py-14 bg-white border-t border-amber-200/50"
+      className="relative overflow-hidden py-10 sm:py-14 bg-white border-t border-amber-200/50"
     >
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Header with Ratings Summary */}

@@ -3,8 +3,8 @@ import { Metadata } from 'next'
 import WishlistPage from '@modules/account/components/wishlist'
 
 export const metadata: Metadata = {
-  title: 'Wishlist',
-  description: 'View and manage your saved items.',
+  title: 'My Saved Items & Wishlist',
+  description: 'View and manage your favorite saved devotional products at Swami Om Enterprises.',
 }
 
 type Props = {

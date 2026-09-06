@@ -32,3 +32,7 @@ build
 
 # Locally installed plugin tarballs
 *.tgz
+
+# Admin built assets
+public/admin/assets/
+public/admin/

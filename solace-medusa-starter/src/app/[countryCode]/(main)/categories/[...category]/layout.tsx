@@ -73,6 +73,10 @@ export async function generateMetadata(
   return {
     title: pageTitle,
     description: cleanDescription,
+    robots: {
+      index: true,
+      follow: true,
+    },
     alternates: {
       canonical: canonicalUrl,
     },

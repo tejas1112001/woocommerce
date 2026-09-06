@@ -6,8 +6,8 @@ import { getRegion } from '@lib/data/regions'
 import AddressBook from '@modules/account/components/address-book'
 
 export const metadata: Metadata = {
-  title: 'Addresses',
-  description: 'View your addresses',
+  title: 'Shipping & Billing Addresses',
+  description: 'Manage your saved delivery locations and billing addresses for fast e-commerce checkout at Swami Om Enterprises.',
 }
 
 export default async function Addresses(props: {

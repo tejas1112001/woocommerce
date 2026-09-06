@@ -11,8 +11,8 @@ import { ProductCarousel } from '@modules/products/components/product-carousel'
 import SkeletonProductsCarousel from '@modules/skeletons/templates/skeleton-products-carousel'
 
 export const metadata: Metadata = {
-  title: 'Cart',
-  description: 'View your cart',
+  title: 'Shopping Cart',
+  description: 'Review your selected Shree Swami Samarth devotional products and proceed to secure checkout.',
 }
 
 const fetchCart = async () => {

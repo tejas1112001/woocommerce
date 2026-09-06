@@ -21,6 +21,16 @@ export const getCustomerFriendlyError = (error: PaymentError): string => {
   const message = error?.message?.toLowerCase() || ''
   const description = error?.error?.description?.toLowerCase() || ''
   const code = error?.error?.code?.toLowerCase() || ''
+  const reason = error?.error?.reason?.toLowerCase() || ''
+
+  // International card not allowed / cross-border restriction
+  if (
+    reason.includes('international') ||
+    description.includes('international') ||
+    code === 'international_transaction_not_allowed'
+  ) {
+    return 'International cards are not supported for this store. Please use an Indian domestic card (for testing: Visa 4100 2800 0000 1007), UPI, or Netbanking.'
+  }
 
   // Network errors
   if (
@@ -41,10 +51,19 @@ export const getCustomerFriendlyError = (error: PaymentError): string => {
     return 'Payment request timed out. Please try again.'
   }
 
+  // Invalid card details
+  if (description.includes('invalid') || code === 'invalid_card') {
+    return 'Invalid card details. Please check your card information and try again.'
+  }
+
+  // Card expired
+  if (description.includes('expired') || code === 'expired_card') {
+    return 'Your card has expired. Please use a different card.'
+  }
+
   // Card declined
   if (
     description.includes('declined') ||
-    description.includes('card') ||
     code === 'card_declined'
   ) {
     return 'Your card was declined. Please try a different payment method or contact your bank.'
@@ -67,16 +86,6 @@ export const getCustomerFriendlyError = (error: PaymentError): string => {
     return 'Payment authentication failed. Please try again or use a different payment method.'
   }
 
-  // Invalid card details
-  if (description.includes('invalid') || code === 'invalid_card') {
-    return 'Invalid card details. Please check your card information and try again.'
-  }
-
-  // Card expired
-  if (description.includes('expired') || code === 'expired_card') {
-    return 'Your card has expired. Please use a different card.'
-  }
-
   // Processing errors
   if (code === 'processing_error') {
     return 'Payment processing error. Please try again in a few moments.'
@@ -90,6 +99,11 @@ export const getCustomerFriendlyError = (error: PaymentError): string => {
   // Razorpay service errors
   if (description.includes('razorpay')) {
     return 'Payment service is temporarily unavailable. Please try again shortly.'
+  }
+
+  // If Razorpay provided a specific description, show it
+  if (error?.error?.description) {
+    return error.error.description
   }
 
   // Generic fallback

@@ -4,8 +4,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { deleteLineItem, updateLineItem } from '@lib/data/cart'
 import { useCartStore } from '@lib/store/useCartStore'
-import { convertToLocale } from '@lib/util/money'
 import { isDefaultVariantTitle } from '@lib/util/is-default-variant'
+import { convertToLocale } from '@lib/util/money'
 import { HttpTypes } from '@medusajs/types'
 import LocalizedClientLink from '@modules/common/components/localized-client-link'
 import { BagIcon, MinusThinIcon, PlusIcon, TrashIcon, XIcon } from '@modules/common/icons'
@@ -84,12 +84,12 @@ const CartItemRow = ({
         href={`/products/${item.variant?.product?.handle ?? ''}`}
         className="shrink-0"
       >
-        <div className="h-[96px] w-[80px] overflow-hidden rounded-lg bg-gray-100">
+        <div className="h-[96px] w-[80px] overflow-hidden rounded-xl border border-gray-100 bg-gray-50">
           <Thumbnail
             thumbnail={item.variant?.thumbnail || item.variant?.product?.thumbnail}
             images={item.variant?.product?.images}
             size="square"
-            className="h-full w-full rounded-none object-cover"
+            className="h-full w-full rounded-none object-cover transition-transform duration-200 hover:scale-105"
           />
         </div>
       </LocalizedClientLink>
@@ -102,12 +102,12 @@ const CartItemRow = ({
               href={`/products/${item.variant?.product?.handle ?? ''}`}
               data-testid="product-link"
             >
-              <p className="line-clamp-2 text-sm font-semibold leading-tight text-gray-900 dark:text-white hover:underline">
+              <p className="line-clamp-2 text-sm font-semibold leading-snug text-gray-900 hover:text-[#6B0014] transition-colors">
                 {item.product_title}
               </p>
             </LocalizedClientLink>
             {item.variant?.title && !isDefaultVariantTitle(item.variant.title) && (
-              <p className="mt-0.5 text-xs text-gray-500 dark:text-gray-400">
+              <p className="mt-0.5 inline-block text-xs font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-md">
                 {item.variant.title}
               </p>
             )}
@@ -118,7 +118,7 @@ const CartItemRow = ({
             onClick={handleDelete}
             disabled={isDeleting}
             aria-label="Remove item"
-            className="shrink-0 rounded-full p-1 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-900/20 dark:hover:text-red-400"
+            className="shrink-0 rounded-full p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500"
             data-testid="cart-item-remove-button"
           >
             <TrashIcon className="h-4 w-4" />
@@ -128,18 +128,18 @@ const CartItemRow = ({
         {/* Qty + Price row */}
         <div className="mt-2 flex items-center justify-between">
           {/* Qty selector */}
-          <div className="inline-flex items-center rounded-full border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm h-8">
+          <div className="inline-flex items-center rounded-full border border-gray-200 bg-white shadow-2xs h-8">
             <button
               type="button"
               onClick={() => handleQtyChange(qty - 1)}
               disabled={qty <= 1 || isUpdating}
               aria-label="Decrease quantity"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-gray-600 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
             >
               <MinusThinIcon className="h-3 w-3" />
             </button>
             <span
-              className="min-w-[2ch] text-center text-sm font-semibold text-gray-800 dark:text-white"
+              className="min-w-[2.5ch] text-center text-xs font-bold text-gray-900"
               aria-live="polite"
               data-testid="cart-item-quantity"
             >
@@ -150,7 +150,7 @@ const CartItemRow = ({
               onClick={() => handleQtyChange(qty + 1)}
               disabled={qty >= maxQty || isUpdating}
               aria-label="Increase quantity"
-              className="flex h-8 w-8 items-center justify-center rounded-full text-gray-600 dark:text-gray-300 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-30"
+              className="flex h-8 w-8 items-center justify-center rounded-full text-gray-600 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-30"
             >
               <PlusIcon className="h-3 w-3" />
             </button>
@@ -158,7 +158,7 @@ const CartItemRow = ({
 
           {/* Line total */}
           <span
-            className="text-sm font-semibold text-gray-900 dark:text-white"
+            className="text-sm font-bold text-gray-900"
             data-testid="cart-item-price"
           >
             {convertToLocale({ amount: lineTotal, currency_code: currencyCode })}
@@ -173,18 +173,18 @@ const CartItemRow = ({
 
 const EmptyCart = ({ onClose }: { onClose: () => void }) => (
   <div className="flex flex-1 flex-col items-center justify-center gap-5 px-8 py-16 text-center">
-    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-      <BagIcon className="h-9 w-9 text-gray-400" />
+    <div className="flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-[#6B0014]/10 via-[#D4AF37]/15 to-transparent border border-[#D4AF37]/30 text-[#6B0014]">
+      <BagIcon className="h-9 w-9" />
     </div>
     <div>
-      <p className="text-lg font-semibold text-gray-900 dark:text-white">Your bag is empty</p>
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-        Looks like you haven&apos;t added anything yet.
+      <p className="text-lg font-bold text-gray-900">Your bag is empty</p>
+      <p className="mt-1 text-xs text-gray-500 max-w-[240px]">
+        Looks like you haven&apos;t added anything to your cart yet.
       </p>
     </div>
     <button
       onClick={onClose}
-      className="mt-2 rounded-full bg-gray-900 dark:bg-white px-7 py-3 text-sm font-semibold text-white dark:text-gray-900 transition-all hover:opacity-85 active:scale-95"
+      className="mt-2 rounded-xl bg-[#0A0A0A] px-6 py-2.5 text-xs font-semibold text-white border border-[#D4AF37]/40 shadow-sm transition-all hover:bg-[#6B0014] hover:text-[#D4AF37] active:scale-95"
     >
       Continue Shopping
     </button>
@@ -216,14 +216,14 @@ const CartDropdown = ({
     setIsMounted(true)
   }, [])
 
-  // Robust synchronization with SSR/server cart data
+  // Synchronization with SSR cart data
   useEffect(() => {
     if (cartProp) {
       setCart(cartProp)
     }
   }, [cartProp, setCart])
 
-  // Refresh whenever the drawer is opened (ensures freshness after adding items)
+  // Refresh whenever the drawer is opened
   useEffect(() => {
     if (isOpenCartDropdown) {
       refreshCart()
@@ -244,16 +244,15 @@ const CartDropdown = ({
   // Close on Escape
   const handleKeyDown = useCallback(
     (e: KeyboardEvent) => {
-      if (e.key === 'Escape') closeCartDropdown()
+      if (e.key === 'Escape' && isOpenCartDropdown) closeCartDropdown()
     },
-    [closeCartDropdown]
+    [isOpenCartDropdown, closeCartDropdown]
   )
   useEffect(() => {
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [handleKeyDown])
 
-  // The active cart is Zustand state (live) or the SSR prop (initial fallback)
   const activeCart = storeCart ?? cartProp
 
   const items = activeCart?.items
@@ -266,7 +265,6 @@ const CartDropdown = ({
   const subtotal = activeCart?.subtotal ?? 0
   const currencyCode = activeCart?.currency_code ?? 'usd'
 
-  // Cart icon badge (always visible in nav)
   return (
     <>
       {/* Cart Icon Button */}
@@ -275,16 +273,16 @@ const CartDropdown = ({
           isOpenCartDropdown ? closeCartDropdown() : refreshCart().then(() => _open())
         }
         aria-label="Open cart"
-        className="relative flex h-11 w-11 items-center justify-center rounded-full bg-transparent text-action-primary transition-colors hover:bg-fg-secondary-hover hover:text-action-primary-hover active:bg-fg-secondary-pressed active:text-action-primary-pressed"
+        className="relative flex h-11 w-11 items-center justify-center rounded-full bg-transparent text-action-primary transition-colors hover:bg-gray-100 active:bg-gray-200"
         data-testid="nav-cart-link"
         id="cart-drawer-trigger"
       >
         <div className="relative inline-flex items-center justify-center">
-          <BagIcon className="h-6 w-6 text-basic-primary" />
+          <BagIcon className="h-6 w-6 text-gray-800" />
           {totalItems > 0 && isMounted && (
             <span
               key={totalItems}
-              className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[11px] font-bold text-white shadow-[0_1.5px_3px_rgba(0,0,0,0.25)] select-none animate-badge-pop"
+              className="absolute -top-2 -right-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#6B0014] border border-[#D4AF37] text-[11px] font-bold text-white shadow-xs select-none animate-badge-pop"
             >
               {totalItems}
             </span>
@@ -296,8 +294,8 @@ const CartDropdown = ({
       <div
         aria-hidden="true"
         onClick={closeCartDropdown}
-        className={`fixed inset-0 z-[60] bg-black/40 backdrop-blur-sm transition-opacity duration-300 ${
-          isOpenCartDropdown ? 'opacity-100' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 z-[60] bg-black/50 backdrop-blur-xs transition-opacity duration-300 ${
+          isOpenCartDropdown ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
         }`}
       />
 
@@ -308,16 +306,19 @@ const CartDropdown = ({
         aria-modal="true"
         aria-label="Shopping cart"
         data-testid="nav-cart-dropdown"
-        className={`fixed right-0 top-0 z-[70] flex h-full w-full flex-col bg-white dark:bg-gray-950 shadow-2xl transition-transform duration-300 ease-in-out small:w-[420px] large:w-[480px] ${
+        className={`fixed right-0 top-0 bottom-0 z-[70] flex h-full w-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-in-out sm:w-[420px] large:w-[460px] border-l border-gray-200/80 ${
           isOpenCartDropdown ? 'translate-x-0' : 'translate-x-full'
         }`}
       >
         {/* ── Header ── */}
-        <div className="flex items-center justify-between border-b border-gray-100 dark:border-gray-800 px-5 py-4">
-          <div className="flex items-center gap-2">
-            <h2 className="text-base font-semibold text-gray-900 dark:text-white">My Bag</h2>
+        <div className="flex items-center justify-between border-b border-gray-100 px-5 py-4 shadow-2xs">
+          <div className="flex items-center gap-2.5">
+            <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
+              <span>My Bag</span>
+              <span className="h-1.5 w-1.5 rounded-full bg-[#D4AF37]" />
+            </h2>
             {totalItems > 0 && (
-              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-gray-900 dark:bg-white px-1.5 text-[11px] font-bold text-white dark:text-gray-900">
+              <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-[#6B0014] px-1.5 text-[11px] font-bold text-[#D4AF37]">
                 {totalItems}
               </span>
             )}
@@ -325,7 +326,7 @@ const CartDropdown = ({
           <button
             onClick={closeCartDropdown}
             aria-label="Close cart"
-            className="rounded-full p-2 text-gray-500 transition-colors hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white"
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-gray-50 text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
             id="cart-drawer-close"
           >
             <XIcon className="h-5 w-5" />
@@ -337,19 +338,19 @@ const CartDropdown = ({
           // Loading skeleton
           <div className="flex-1 overflow-y-auto px-5">
             {[1, 2].map((i) => (
-              <div key={i} className="flex animate-pulse gap-3 py-4 border-b border-gray-50 dark:border-gray-900">
-                <div className="h-[96px] w-[80px] shrink-0 rounded-lg bg-gray-200 dark:bg-gray-800" />
+              <div key={i} className="flex animate-pulse gap-3 py-4 border-b border-gray-100">
+                <div className="h-[96px] w-[80px] shrink-0 rounded-xl bg-gray-200" />
                 <div className="flex flex-1 flex-col gap-2 pt-1">
-                  <div className="h-4 w-3/4 rounded bg-gray-200 dark:bg-gray-800" />
-                  <div className="h-3 w-1/2 rounded bg-gray-100 dark:bg-gray-800" />
-                  <div className="mt-auto h-8 w-28 rounded-full bg-gray-100 dark:bg-gray-800" />
+                  <div className="h-4 w-3/4 rounded bg-gray-200" />
+                  <div className="h-3 w-1/2 rounded bg-gray-100" />
+                  <div className="mt-auto h-8 w-28 rounded-full bg-gray-100" />
                 </div>
               </div>
             ))}
           </div>
         ) : items.length > 0 ? (
           <div className="flex-1 overflow-y-auto px-5 no-scrollbar">
-            <div className="divide-y divide-gray-100 dark:divide-gray-800/60">
+            <div className="divide-y divide-gray-100">
               {items.map((item) => (
                 <CartItemRow
                   key={item.id}
@@ -366,25 +367,25 @@ const CartDropdown = ({
 
         {/* ── Footer ── */}
         {items.length > 0 && (
-          <div className="border-t border-gray-100 dark:border-gray-800 px-5 pb-6 pt-4 space-y-3">
+          <div className="border-t border-gray-100 bg-gray-50/50 px-5 pb-6 pt-4 space-y-3">
             {/* Subtotal */}
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500 dark:text-gray-400">Subtotal</span>
+              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">Subtotal</span>
               <span
-                className="text-base font-bold text-gray-900 dark:text-white"
+                className="text-base font-bold text-gray-900"
                 data-testid="cart-subtotal"
               >
                 {convertToLocale({ amount: subtotal, currency_code: currencyCode })}
               </span>
             </div>
-            <p className="text-xs text-gray-400 dark:text-gray-500">
+            <p className="text-[11px] text-gray-400">
               Shipping and taxes calculated at checkout.
             </p>
 
             {/* Checkout CTA */}
             <LocalizedClientLink href="/checkout" onClick={closeCartDropdown}>
               <button
-                className="mt-1 w-full rounded-full bg-gray-900 dark:bg-white py-3.5 text-sm font-semibold text-white dark:text-gray-900 shadow-sm transition-all hover:opacity-85 active:scale-[0.98]"
+                className="mt-1 w-full rounded-xl bg-gradient-to-r from-[#0A0A0A] via-[#6B0014] to-[#0A0A0A] py-3.5 text-sm font-bold text-white shadow-md border border-[#D4AF37]/30 transition-all hover:shadow-lg active:scale-[0.98]"
                 data-testid="checkout-button"
                 id="cart-checkout-button"
               >
@@ -394,7 +395,7 @@ const CartDropdown = ({
 
             {/* View cart link */}
             <LocalizedClientLink href="/cart" onClick={closeCartDropdown}>
-              <p className="text-center text-xs text-gray-500 dark:text-gray-400 hover:underline cursor-pointer mt-1">
+              <p className="text-center text-xs font-semibold text-gray-500 hover:text-[#6B0014] hover:underline cursor-pointer mt-1">
                 View full cart
               </p>
             </LocalizedClientLink>

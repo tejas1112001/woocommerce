@@ -28,7 +28,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   const now = new Date()
 
-  // Important indexable static pages only (excluding utility/non-indexable pages like /thank-you)
+  // 1. Static INDEX pages (5 pages)
   const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: `${baseUrl}/`,
@@ -50,84 +50,103 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/contact`,
       lastModified: now,
     },
-    {
-      url: `${baseUrl}/wholesale`,
-      lastModified: now,
-    },
-    {
-      url: `${baseUrl}/privacy-policy`,
-      lastModified: now,
-    },
-    {
-      url: `${baseUrl}/terms-and-conditions`,
-      lastModified: now,
-    },
-    {
-      url: `${baseUrl}/shipping-policy`,
-      lastModified: now,
-    },
-    {
-      url: `${baseUrl}/return-policy`,
-      lastModified: now,
-    },
   ]
 
-  // Dynamic Product routes
-  let productRoutes: MetadataRoute.Sitemap = []
+  // Allowed Product Handles (3 pages)
+  const allowedProductHandles = [
+    'shree-swami-samarth-printed-tshirt',
+    'shree-swami-samarth-topi',
+    'swami-samarth-napkins',
+  ]
+
+  // Allowed Category Handles (2 pages)
+  const allowedCategoryHandles = ['printed-t-shirt', 'idol-accessories']
+
+  // Allowed Collection Handles (1 page)
+  const allowedCollectionHandles = ['swami-samarth']
+
+  // Product routes
+  const productDateMap = new Map<string, Date>()
   try {
     const { response } = await getProductsList({
       countryCode: 'in',
       queryParams: { limit: 1000 },
     })
     if (response?.products) {
-      productRoutes = response.products
-        .filter((product) => isValidHandle(product.handle))
-        .map((product) => ({
-          url: `${baseUrl}/products/${product.handle!.trim()}`,
-          lastModified: product.updated_at
-            ? new Date(product.updated_at)
-            : now,
-        }))
+      for (const p of response.products) {
+        if (p.handle && allowedProductHandles.includes(p.handle)) {
+          productDateMap.set(
+            p.handle,
+            p.updated_at ? new Date(p.updated_at) : now
+          )
+        }
+      }
     }
   } catch (e) {
-    console.error('Error generating product sitemap entries:', e)
+    console.error('Error fetching product sitemap entries:', e)
   }
 
-  // Dynamic Category routes
-  let categoryRoutes: MetadataRoute.Sitemap = []
+  const productRoutes: MetadataRoute.Sitemap = allowedProductHandles.map(
+    (handle) => ({
+      url: `${baseUrl}/products/${handle}`,
+      lastModified: productDateMap.get(handle) || now,
+    })
+  )
+
+  // Category routes
+  const categoryDateMap = new Map<string, Date>()
   try {
     const { product_categories } = await getCategoriesList()
     if (product_categories) {
-      categoryRoutes = product_categories
-        .filter((category) => isValidHandle(category.handle))
-        .map((category) => ({
-          url: `${baseUrl}/categories/${category.handle!.trim()}`,
-          lastModified: category.updated_at
-            ? new Date(category.updated_at)
-            : now,
-        }))
+      for (const c of product_categories) {
+        if (c.handle && allowedCategoryHandles.includes(c.handle)) {
+          categoryDateMap.set(
+            c.handle,
+            c.updated_at ? new Date(c.updated_at) : now
+          )
+        }
+      }
     }
   } catch (e) {
-    console.error('Error generating category sitemap entries:', e)
+    console.error('Error fetching category sitemap entries:', e)
   }
 
-  // Dynamic Collection routes
-  let collectionRoutes: MetadataRoute.Sitemap = []
+  const categoryRoutes: MetadataRoute.Sitemap = allowedCategoryHandles.map(
+    (handle) => ({
+      url: `${baseUrl}/categories/${handle}`,
+      lastModified: categoryDateMap.get(handle) || now,
+    })
+  )
+
+  // Collection routes
+  const collectionDateMap = new Map<string, Date>()
   try {
     const { collections } = await getCollectionsList(100)
     if (collections) {
-      collectionRoutes = collections
-        .filter((collection) => isValidHandle(collection.handle))
-        .map((collection) => ({
-          url: `${baseUrl}/collections/${collection.handle!.trim()}`,
-          lastModified: collection.updated_at
-            ? new Date(collection.updated_at)
-            : now,
-        }))
+      for (const col of collections) {
+        if (col.handle && allowedCollectionHandles.includes(col.handle)) {
+          collectionDateMap.set(
+            col.handle,
+            col.updated_at ? new Date(col.updated_at) : now
+          )
+        }
+      }
     }
   } catch (e) {
-    console.error('Error generating collection sitemap entries:', e)
+    console.error('Error fetching collection sitemap entries:', e)
   }
 
-  return [...staticRoutes, ...productRoutes, ...categoryRoutes, ...collectionRoutes]
+  const collectionRoutes: MetadataRoute.Sitemap = allowedCollectionHandles.map(
+    (handle) => ({
+      url: `${baseUrl}/collections/${handle}`,
+      lastModified: collectionDateMap.get(handle) || now,
+    })
+  )
+
+  return [
+    ...staticRoutes,
+    ...productRoutes,
+    ...categoryRoutes,
+    ...collectionRoutes,
+  ]
 }

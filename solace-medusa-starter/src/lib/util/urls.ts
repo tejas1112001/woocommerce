@@ -19,12 +19,8 @@ export const getLocalizedPath = (path: string = '', countryCode?: string) => {
     }
   }
 
-  // If code is default region, return clean path without country code prefix
-  if (code === DEFAULT_REGION) {
-    return cleanPath === '' ? '/' : cleanPath
-  }
-
-  // Otherwise return path with country code prefix
+  // Always return path with country code prefix
+  // This is required because Next.js routing requires [countryCode] parameter
   return `/${code}${cleanPath === '/' ? '' : cleanPath}`
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useActionState, useState } from 'react'
+import { useState, useTransition } from 'react'
 
 import { emailRegex } from '@lib/constants'
 import { forgotPassword } from '@lib/data/customer'
@@ -12,91 +12,149 @@ import { Button } from '@modules/common/components/button'
 import { Heading } from '@modules/common/components/heading'
 import { Input } from '@modules/common/components/input'
 import { Text } from '@modules/common/components/text'
-import { SearchResultsIcon } from '@modules/common/icons'
+import { toast } from '@modules/common/components/toast'
 
 type Props = {
   setCurrentView: (view: LOGIN_VIEW) => void
-  /** Accepted for interface consistency with Login/Register — not used here
-   *  since password reset does not require a post-auth redirect. */
+  /** Accepted for interface consistency with Login/Register */
   redirectTo?: string
 }
 
 const ForgotPassword = ({ setCurrentView }: Props) => {
-  const [, formAction] = useActionState(forgotPassword, null)
-  const [emailInputError, setEmailInputError] = useState(null)
-  const [email, setEmail] = useState(null)
+  const [isPending, startTransition] = useTransition()
+  const [emailInputError, setEmailInputError] = useState<string | null>(null)
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null)
+  const [serverError, setServerError] = useState<string | null>(null)
+  const [isSuccess, setIsSuccess] = useState(false)
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     const form = event.currentTarget
     const formData = new FormData(form)
-    if (!formData.get('email')) {
-      setEmailInputError('Please enter')
+    const rawEmail = (formData.get('email') as string || '').trim()
+
+    if (!rawEmail) {
+      setEmailInputError('Please enter your email address.')
       return
     }
 
-    if (!emailRegex.test(formData.get('email').toString())) {
-      setEmailInputError('Please enter a valid email')
+    if (!emailRegex.test(rawEmail)) {
+      setEmailInputError('Please enter a valid email address.')
       return
     }
-    formAction(formData)
-    setEmailInputError('')
-    setEmail(formData.get('email').toString())
+
+    setEmailInputError(null)
+    setServerError(null)
+    setIsSuccess(false)
+
+    startTransition(async () => {
+      const res = await forgotPassword(null, formData)
+      if (res === 'ACCOUNT_NOT_FOUND') {
+        setServerError('ACCOUNT_NOT_FOUND')
+        toast('error', 'No account found with this email. Please check your email or create an account.')
+      } else if (res === 'SUCCESS') {
+        setSubmittedEmail(rawEmail)
+        setIsSuccess(true)
+        toast('success', `Password reset link sent to ${rawEmail}`)
+      } else if (res) {
+        setServerError(res)
+        toast('error', res)
+      }
+    })
   }
 
   return (
     <Box
-      className={cn('flex w-full flex-col gap-6 p-4 small:p-5', {
-        'bg-primary': !email,
-        'mx-auto max-w-[438px] items-center': !!email,
+      className={cn('flex w-full flex-col gap-6 p-4 small:p-5 rounded-2xl border border-gray-100 shadow-sm', {
+        'bg-primary': !isSuccess,
+        'mx-auto max-w-[460px] items-center bg-white border-amber-200': isSuccess,
       })}
     >
-      {email ? (
-        <>
-          <SearchResultsIcon />
-          <Box className="text-center">
-            <Heading className="mb-2 text-xl small:text-2xl">
+      {isSuccess ? (
+        <Box className="flex flex-col items-center text-center gap-4 py-4 w-full">
+          <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-3xl font-bold shadow-sm">
+            ✉️
+          </div>
+          <Box className="text-center space-y-2">
+            <Heading className="text-xl small:text-2xl font-bold text-gray-900">
               Check your inbox
             </Heading>
-            <Text className="text-secondary" size="md">
-              A password reset has been requested for {email}. If this email is
-              associated with any existing account, reset instructions will be
-              sent shortly. Check your inbox and spam folder. Remember, the link
-              is only active for one hour.
+            <Text className="text-gray-600 text-xs sm:text-sm leading-relaxed max-w-sm">
+              We've sent a password reset link to{' '}
+              <strong className="text-gray-900 font-semibold">{submittedEmail}</strong>.
+              Please check your inbox and spam folder to reset your password. The link is valid for 1 hour.
             </Text>
           </Box>
-        </>
+
+          <Button
+            variant="tonal"
+            className="mt-4 w-full text-xs font-bold"
+            onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
+          >
+            ← Back to log in
+          </Button>
+        </Box>
       ) : (
         <>
-          <Box className="flex flex-col gap-2">
-            <Heading className="text-xl small:text-2xl">
+          <Box className="flex flex-col gap-1.5">
+            <Heading className="text-xl small:text-2xl font-bold text-gray-900">
               Forgot your password?
             </Heading>
-            <Text className="text-secondary" size="md">
-              Enter the email you used to sign up and we’ll send you a password
-              reset email.
+            <Text className="text-gray-600 text-xs sm:text-sm">
+              Enter the email associated with your account and we’ll send you a password reset link.
             </Text>
           </Box>
+
+          {/* ── Unregistered Email Alert ───────────────────────────────────── */}
+          {serverError === 'ACCOUNT_NOT_FOUND' && (
+            <div className="rounded-xl bg-amber-50 border border-amber-300 p-4 text-xs text-amber-950 flex flex-col gap-1.5 animate-fadeIn">
+              <div className="flex items-center gap-2 font-bold text-amber-900 text-sm">
+                <span>⚠️</span>
+                <span>Account not found</span>
+              </div>
+              <p className="leading-relaxed">
+                No account found with this email. Please check your email or create an account.
+              </p>
+              <button
+                type="button"
+                onClick={() => setCurrentView(LOGIN_VIEW.REGISTER)}
+                className="self-start text-xs font-extrabold text-amber-900 underline hover:text-amber-950 mt-1 cursor-pointer"
+              >
+                Create an account now →
+              </button>
+            </div>
+          )}
+
+          {serverError && serverError !== 'ACCOUNT_NOT_FOUND' && (
+            <div className="rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-800 font-medium">
+              {serverError}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
-            <Input
-              label="Email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              error={emailInputError}
-              data-testid="email-input"
-            />
-            <Box className="flex flex-col gap-4">
+            <div className="flex flex-col gap-y-4">
+              <Input
+                label="Email address"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                error={emailInputError}
+                data-testid="email-input"
+              />
+            </div>
+            <Box className="flex flex-col gap-3 mt-4">
               <SubmitButton
                 data-testid="sign-in-button"
-                className="mt-6 w-full"
+                className="w-full"
+                isLoading={isPending}
               >
-                Reset password
+                Send Reset Link
               </SubmitButton>
               <Button
                 variant="text"
-                className="w-full"
+                className="w-full text-xs text-gray-600 hover:text-gray-900 font-semibold"
+                type="button"
                 onClick={() => setCurrentView(LOGIN_VIEW.SIGN_IN)}
               >
                 Back to log in

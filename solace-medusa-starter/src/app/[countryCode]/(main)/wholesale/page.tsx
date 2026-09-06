@@ -5,6 +5,10 @@ export const metadata: Metadata = {
   title: 'Wholesale & Bulk Orders | Swami Om Enterprises Akkalkot',
   description:
     'Wholesale Shree Swami Samarth devotional products direct from Akkalkot. Slab pricing, custom printing, and bulk orders for mandals, temples, and resellers.',
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: 'https://swamiomenterprises.in/wholesale',
   },

@@ -11,7 +11,7 @@ export const AkkalkotStore: FC = () => {
     <section
       id="akkalkot-store"
       aria-label="Akkalkot Store Information and Interactive Map"
-      className="relative py-10 sm:py-14 bg-gradient-to-b from-white via-amber-50/40 to-amber-50/80 border-t border-amber-200/50"
+      className="relative overflow-hidden py-10 sm:py-14 bg-gradient-to-b from-white via-amber-50/40 to-amber-50/80 border-t border-amber-200/50"
     >
       <div className="container relative mx-auto px-4 sm:px-6 lg:px-8 max-w-7xl">
         {/* Section Title */}

@@ -4,6 +4,10 @@ export const metadata: Metadata = {
   title: 'Privacy Policy | Swami Om Enterprises',
   description:
     'Read the Privacy Policy for Swami Om Enterprises. Learn how we handle customer data, payment security via Razorpay, and data protection for our devotional store.',
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: 'https://swamiomenterprises.in/privacy-policy',
   },

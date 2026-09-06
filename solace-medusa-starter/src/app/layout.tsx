@@ -18,6 +18,10 @@ const poppins = Poppins({
 
 export const metadata: Metadata = {
   metadataBase: new URL(getBaseURL()),
+  robots: {
+    index: true,
+    follow: true,
+  },
   title: {
     default: 'Shree Swami Samarth Products | Swami Om Enterprises',
     template: '%s | Swami Om Enterprises',
@@ -112,7 +116,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           enableSystem={false}
         >
           <ProgressBar />
-          <Toaster position="bottom-right" offset={65} closeButton />
+          <Toaster position="bottom-right" closeButton />
           <main className="relative">{props.children}</main>
         </ThemeProvider>
       </body>

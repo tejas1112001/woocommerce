@@ -4,6 +4,10 @@ export const metadata: Metadata = {
   title: 'Terms & Conditions | Swami Om Enterprises',
   description:
     'Read the official Terms and Conditions for Swami Om Enterprises. Guidelines for purchasing devotional products, pricing, delivery, and wholesale orders.',
+  robots: {
+    index: false,
+    follow: true,
+  },
   alternates: {
     canonical: 'https://swamiomenterprises.in/terms-and-conditions',
   },
