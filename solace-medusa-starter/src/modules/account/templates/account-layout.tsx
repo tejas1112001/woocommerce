@@ -27,14 +27,16 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
   }
 
   return (
-    <Box className="bg-secondary">
-      <AccountMobileNav />
-      <Container>
-        <Box className="gap grid grid-cols-12 gap-6">
-          <Box className="hidden xl:col-span-3 xl:block">
+    <Box className="bg-secondary print:bg-white print:p-0 print:m-0">
+      <div className="print:hidden">
+        <AccountMobileNav />
+      </div>
+      <Container className="print:p-0 print:m-0 print:max-w-none">
+        <Box className="gap grid grid-cols-12 gap-6 print:block print:w-full">
+          <Box className="hidden xl:col-span-3 xl:block print:hidden">
             <AccountNav />
           </Box>
-          <div className="col-span-12 xl:col-span-9">{children}</div>
+          <div className="col-span-12 xl:col-span-9 print:w-full print:col-span-12">{children}</div>
         </Box>
       </Container>
     </Box>

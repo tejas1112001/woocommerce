@@ -9,6 +9,10 @@ export async function generateMetadata(): Promise<Metadata> {
     title: 'Shree Swami Samarth Devotional Store | Swami Om Enterprises',
     description:
       'Browse our complete collection of Shree Swami Samarth devotional items. High quality kurtas, dhotis, topis, frames & accessories with shipping across India.',
+    robots: {
+      index: true,
+      follow: true,
+    },
     alternates: {
       canonical: 'https://swamiomenterprises.in/shop',
     },

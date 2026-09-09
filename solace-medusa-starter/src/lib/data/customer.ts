@@ -8,6 +8,23 @@ import { getLocalizedPath } from '@lib/util/urls'
 
 import { getAuthHeaders, removeAuthToken, setAuthToken, removeCartId } from './cookies'
 
+/**
+ * Get headers with publishable API key for fetch calls
+ */
+function getPublishableHeaders(additionalHeaders?: HeadersInit): HeadersInit {
+  const headers: HeadersInit = {
+    'Content-Type': 'application/json',
+    ...additionalHeaders,
+  }
+  
+  const publishableKey = process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY
+  if (publishableKey) {
+    headers['x-publishable-api-key'] = publishableKey
+  }
+  
+  return headers
+}
+
 export async function getCustomer() {
   const authHeaders = await getAuthHeaders()
 
@@ -52,9 +69,44 @@ export async function signup(
   _currentState: unknown,
   formData: FormData
 ): Promise<string | null> {
+  // Normalise email — the OTP token was generated with the lowercase email,
+  // and Medusa's auth layer also normalises internally.  Using the raw form
+  // value (which can have mixed case) caused token validation to fail and
+  // sdk.auth.register() to surface "Identity with email already exists" even
+  // for genuinely new users who typed their email in a different case.
+  const email = (formData.get('email') as string).toLowerCase().trim()
   const password = formData.get('password') as string
+  const verificationToken = formData.get('verification_token') as string
+  
+  // Verify OTP token is present
+  if (!verificationToken) {
+    return "Email verification required. Please verify your email first."
+  }
+
+  // Validate verification token
+  try {
+    const decoded = JSON.parse(
+      Buffer.from(verificationToken, 'base64').toString('utf-8')
+    )
+    
+    // Compare against the normalised email — both sides are lowercase.
+    if (decoded.email !== email || !decoded.verified) {
+      return "Invalid verification. Please try registering again."
+    }
+    
+    // Check if verification is recent (within 1 hour)
+    const tokenAge = Date.now() - decoded.timestamp
+    const oneHour = 60 * 60 * 1000
+    if (tokenAge > oneHour) {
+      return "Verification expired. Please register again."
+    }
+  } catch {
+    return "Invalid verification token."
+  }
+
   const customerForm = {
-    email: formData.get('email') as string,
+    // Always use the normalised email so it is consistent with the auth identity.
+    email,
     first_name: formData.get('first_name') as string,
     last_name: formData.get('last_name') as string,
     phone: formData.get('phone') as string,
@@ -87,7 +139,17 @@ export async function signup(
     await setAuthToken(loginToken as string)
     revalidateTag('customer', 'max')
   } catch (error: any) {
-    return error.toString()
+    const message: string = error?.message ?? error?.toString() ?? 'Unknown error'
+    // Tag known "email already taken" errors with a structured prefix so the
+    // frontend can render a friendly recovery UI without fragile substring checks
+    // on Medusa's internal error strings (which can change between versions).
+    if (
+      message.toLowerCase().includes('identity with email') ||
+      message.toLowerCase().includes('already exists')
+    ) {
+      return `EMAIL_EXISTS:${email}`
+    }
+    return message
   }
 
   // If the user came from a protected page (e.g. checkout), send them back there.
@@ -97,52 +159,55 @@ export async function signup(
 export async function forgotPassword(
   _currentState: unknown,
   formData: FormData
-) {
-  const email = formData.get('email') as string
+): Promise<string | null> {
+  const rawEmail = formData.get('email') as string
+  const email = (rawEmail || '').toLowerCase().trim()
+
+  if (!email) {
+    return 'Please enter your email address.'
+  }
+
   try {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/auth/customer/emailpass/reset-password`,
-      {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          identifier: email,
-        }),
+    const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+    const res = await fetch(`${backendUrl}/store/customer/forgot-password`, {
+      method: 'POST',
+      headers: getPublishableHeaders(),
+      body: JSON.stringify({ email }),
+      cache: 'no-store',
+    })
+
+    const data = await res.json().catch(() => ({}))
+
+    if (!res.ok || !data.success) {
+      if (res.status === 404 || data.message === 'ACCOUNT_NOT_FOUND') {
+        return 'ACCOUNT_NOT_FOUND'
       }
-    )
+      return data.message || 'Failed to send password reset email'
+    }
+
+    return 'SUCCESS'
   } catch (error: any) {
-    return error.toString()
+    return error?.message ?? error?.toString() ?? 'Failed to send password reset email'
   }
 }
 
 export async function resetPassword(
   _currentState: unknown,
   formData: FormData
-) {
-  const email = formData.get('email') as string
+): Promise<string | null> {
   const token = formData.get('token') as string
   const password = formData.get('new_password') as string
 
+  if (!password || !token) {
+    return 'Invalid reset request. Please request a new password reset link.'
+  }
+
   try {
-    await fetch(
-      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/auth/customer/emailpass/update?token=${token}`,
-      {
-        credentials: 'include',
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      }
-    )
+    await sdk.auth.updateProvider('customer', 'emailpass', { password }, token)
+    return null
   } catch (error: any) {
-    return error.toString()
+    const message = error?.message ?? error?.toString() ?? 'Failed to reset password'
+    return message
   }
 }
 
@@ -150,16 +215,40 @@ export async function login(
   _currentState: unknown,
   formData: FormData
 ): Promise<string | null> {
-  const email = formData.get('email') as string
+  const email = (formData.get('email') as string || '').toLowerCase().trim()
   const password = formData.get('password') as string
 
   // `redirectTo` is an optional hidden field injected by the checkout guard so
   // authenticated users land back on the page they were trying to reach instead
   // of the generic /account dashboard.
-  // Always decode — see signup for rationale.
   const rawRedirectTo = (formData.get('redirectTo') as string) || null
   const redirectTo = rawRedirectTo ? decodeURIComponent(rawRedirectTo) : null
 
+  if (!email || !password) {
+    return 'Please enter both email and password.'
+  }
+
+  // 1. Check if email is registered in customer database
+  try {
+    const backendUrl = process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
+    const checkRes = await fetch(
+      `${backendUrl}/store/customer/check-email?email=${encodeURIComponent(email)}`,
+      {
+        headers: getPublishableHeaders(),
+        cache: 'no-store',
+      }
+    )
+    if (checkRes.ok) {
+      const data = await checkRes.json()
+      if (data.exists === false) {
+        return 'ACCOUNT_NOT_FOUND'
+      }
+    }
+  } catch {
+    // Silently fall through to auth login attempt if check fetch fails
+  }
+
+  // 2. Attempt authentication
   try {
     const token = await sdk.auth.login('customer', 'emailpass', {
       email,
@@ -168,11 +257,18 @@ export async function login(
     await setAuthToken(token as string)
     revalidateTag('customer', 'max')
   } catch (error: any) {
-    return error.toString()
+    const errStr = (error?.message ?? error?.toString() ?? '').toLowerCase()
+    if (
+      errStr.includes('not found') ||
+      errStr.includes('does not exist') ||
+      errStr.includes('no identity')
+    ) {
+      return 'ACCOUNT_NOT_FOUND'
+    }
+    return 'INCORRECT_PASSWORD'
   }
 
   // Redirect happens outside try/catch so it throws the redirect signal correctly.
-  // If the user came from a protected page (e.g. checkout), send them back there.
   redirect(redirectTo ?? '/account')
 }
 
@@ -209,10 +305,9 @@ export async function updateCustomerPassword(
       {
         method: 'POST',
         credentials: 'include',
-        headers: {
-          'Content-Type': 'application/json',
+        headers: getPublishableHeaders({
           ...(token ? { authorization: `Bearer ${token}` } : {}),
-        },
+        }),
         body: JSON.stringify({ email: email_raw, password: new_password }),
       }
     )

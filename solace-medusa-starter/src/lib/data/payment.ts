@@ -40,42 +40,32 @@ export async function verifyRazorpayPayment({
   razorpay_payment_id: string
   razorpay_order_id: string
   razorpay_signature: string
-}): Promise<{ verified: boolean }> {
-  const backendUrl =
-    process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL || 'http://localhost:9000'
-
+}): Promise<{ verified: boolean; error?: string }> {
   const authHeaders = await getAuthHeaders()
 
-  const response = await fetch(
-    `${backendUrl}/store/custom/razorpay-verify`,
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Forward auth token so the backend can identify the customer session
-        ...('authorization' in authHeaders
-          ? { Authorization: authHeaders.authorization }
-          : {}),
-        // Required Medusa publishable key header
-        'x-publishable-api-key':
-          process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY || '',
-      },
-      body: JSON.stringify({
-        razorpay_payment_id,
-        razorpay_order_id,
-        razorpay_signature,
-      }),
-    }
-  )
-
-  if (!response.ok) {
-    const body = await response.json().catch(() => ({}))
-    throw new Error(
-      body?.error ||
-        `Payment verification failed with status ${response.status}`
+  try {
+    const data = await sdk.client.fetch<{ verified: boolean }>(
+      '/store/custom/razorpay-verify',
+      {
+        method: 'POST',
+        headers: authHeaders as Record<string, string>,
+        body: {
+          razorpay_payment_id,
+          razorpay_order_id,
+          razorpay_signature,
+        },
+      }
     )
-  }
 
-  return response.json()
+    return { verified: data?.verified ?? true }
+  } catch (err: any) {
+    console.error('[verifyRazorpayPayment] Verification request failed:', err)
+    return {
+      verified: false,
+      error:
+        err?.message ||
+        'Payment signature verification failed. Please contact support.',
+    }
+  }
 }
 

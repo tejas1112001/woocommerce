@@ -9,16 +9,20 @@
     /* Prevent horizontal scroll that can be triggered by the full-width
        fixed mega-menu panel or any element that momentarily overflows. */
     overflow-x: hidden;
+    max-width: 100vw;
   }
 
   body {
     font-family: 'Poppins', var(--font-poppins), ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     @apply bg-primary;
     scroll-behavior: smooth;
+    overflow-x: hidden;
+    max-width: 100%;
   }
 
-  /* Prevent background scroll when cart drawer is open */
-  body.cart-drawer-open {
+  /* Prevent background scroll when cart drawer or mobile menu is open */
+  body.cart-drawer-open,
+  body.mobile-menu-open {
     overflow: hidden;
   }
 }
@@ -167,15 +171,32 @@
   .mega-menu-panel {
     /* Ensure the fixed panel is always viewport-width and never causes
        a horizontal scrollbar on the root document. */
-    width: 100vw;
+    width: 100%;
+    max-width: 100vw;
     left: 0;
     right: 0;
   }
 }
 
 /* ── Print styles (invoice page) ─────────────────────────────────── */
+@page {
+  size: A4 portrait;
+  margin: 8mm 10mm;
+}
+
 @media print {
-  /* Hide site chrome */
+  /* Reset document for clean single-page printing */
+  html, body {
+    height: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: #0d0d0d !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Hide site chrome & non-printable elements */
   header,
   nav,
   footer,
@@ -186,20 +207,57 @@
     display: none !important;
   }
 
-  body {
-    background: white !important;
-    color: black !important;
-  }
-
-  /* Ensure invoice container fills page */
+  /* Reset layout containers */
   main {
     padding: 0 !important;
     margin: 0 !important;
   }
 
+  /* Prevent page breaks inside invoice elements */
+  .printable-invoice-card,
+  tr,
+  .print-avoid-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
   a {
     text-decoration: none !important;
     color: inherit !important;
+  }
+}
+
+/* ── Toast Notification Positioning & Responsiveness ──────────────────────── */
+[data-sonner-toaster] {
+  z-index: 100 !important;
+  bottom: calc(210px + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+/* Mobile (< 640px): Centered horizontally inside cart drawer / viewport */
+@media (max-width: 639px) {
+  [data-sonner-toaster] {
+    left: 50% !important;
+    right: auto !important;
+    transform: translateX(-50%) !important;
+    width: calc(100vw - 32px) !important;
+    max-width: 380px !important;
+    display: flex !important;
+    justify-content: center !important;
+  }
+
+  [data-sonner-toaster] [data-sonner-toast] {
+    width: 100% !important;
+    max-width: 380px !important;
+  }
+}
+
+/* Desktop (>= 640px): Positioned near bottom-right of viewport / cart drawer */
+@media (min-width: 640px) {
+  [data-sonner-toaster] {
+    right: 24px !important;
+    left: auto !important;
+    transform: none !important;
+    width: var(--width, 356px) !important;
   }
 }
 

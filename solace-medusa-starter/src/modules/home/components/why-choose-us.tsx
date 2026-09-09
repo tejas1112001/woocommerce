@@ -106,7 +106,7 @@ export const WhyChooseUs: FC = () => {
     <section
       id="why-choose-us"
       aria-label="Why Choose Swami Om Enterprises"
-      className="relative py-10 sm:py-14 bg-gradient-to-b from-amber-50/60 via-orange-50/30 to-white"
+      className="relative overflow-hidden py-10 sm:py-14 bg-gradient-to-b from-amber-50/60 via-orange-50/30 to-white"
     >
       {/* Decorative background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-7xl h-64 bg-amber-200/20 blur-3xl pointer-events-none rounded-full" />

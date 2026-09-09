@@ -7,8 +7,8 @@ import Overview from '@modules/account/components/overview'
 import { OrderType } from '@modules/account/components/order-overview'
 
 export const metadata: Metadata = {
-  title: 'Account',
-  description: 'Overview of your account activity.',
+  title: 'My Account Dashboard',
+  description: 'Overview of your account activity, recent orders, and shipping details at Swami Om Enterprises.',
 }
 
 export default async function OverviewTemplate() {

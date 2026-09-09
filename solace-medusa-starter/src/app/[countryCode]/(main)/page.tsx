@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   title: 'Shree Swami Samarth Products | Swami Om Enterprises',
   description:
     'Shop authentic Shree Swami Samarth devotional products from Akkalkot. Kurtas, dhotis, shawls, T-shirts, topis and frames. Wholesale and retail Pan-India.',
+  robots: {
+    index: true,
+    follow: true,
+  },
   alternates: {
     canonical: 'https://swamiomenterprises.in/',
   },

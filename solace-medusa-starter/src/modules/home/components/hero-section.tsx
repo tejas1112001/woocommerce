@@ -19,7 +19,7 @@ const HeroSection: FC<Props> = ({ className = '' }) => {
     <section
       id="hero"
       aria-label="Hero | Shree Swami Samarth Devotional Store"
-      className={`relative bg-gradient-to-b from-amber-50/90 via-orange-50/40 to-amber-50/80 border-b border-amber-200/50 py-8 sm:py-12 lg:py-16 ${className}`}
+      className={`relative overflow-hidden bg-gradient-to-b from-amber-50/90 via-orange-50/40 to-amber-50/80 border-b border-amber-200/50 py-8 sm:py-12 lg:py-16 ${className}`}
     >
       {/* Decorative background ambient glows (Pure CSS, pointer-events-none) */}
       <div className="absolute -top-32 left-1/4 w-[500px] h-[500px] bg-gradient-to-br from-amber-300/20 via-orange-400/15 to-transparent blur-3xl pointer-events-none rounded-full" />

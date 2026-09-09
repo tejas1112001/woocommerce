@@ -10,8 +10,12 @@ import { Text } from '@modules/common/components/text'
 import CollectionCarousel from '@modules/collections/components/collection-carousel'
 
 export const metadata: Metadata = {
-  title: 'Collections | Tejas',
-  description: 'Browse all our curated collections.',
+  title: 'Collections | Swami Om Enterprises',
+  description: 'Browse all our curated Shree Swami Samarth devotional collections.',
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 export const dynamic = 'force-dynamic'

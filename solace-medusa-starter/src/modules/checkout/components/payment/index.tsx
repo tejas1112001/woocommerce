@@ -55,7 +55,7 @@ const Payment = ({
     cart?.gift_cards && cart?.gift_cards?.length > 0 && cart?.total === 0
 
   const paymentReady =
-    (activeSession && cart?.shipping_methods.length !== 0) || paidByGiftcard
+    (activeSession && (cart?.shipping_methods?.length ?? 0) !== 0) || paidByGiftcard
 
   const activeStep = searchParams.get('step')
   const isAddressCompleted = !!(
@@ -72,8 +72,7 @@ const Payment = ({
 
   const isOpen =
     isAddressCompleted &&
-    isDeliveryCompleted &&
-    (activeStep === 'payment' || !activeStep || !paymentReady)
+    (activeStep === 'payment' || (isDeliveryCompleted && (!activeStep || !paymentReady)))
 
   const useOptions: StripeCardElementOptions = useMemo(() => {
     return {
@@ -110,11 +109,15 @@ const Payment = ({
 
   const handlePaymentMethodChange = async (value: string) => {
     setSelectedPaymentMethod(value)
+    if (activeSession?.provider_id === value) {
+      return
+    }
     await handleSubmit(value)
   }
 
   const handleSubmit = async (paymentMethodId: string) => {
     setIsLoading(true)
+    setError(null)
 
     try {
       await initiatePaymentSession(cart, {
@@ -126,11 +129,18 @@ const Payment = ({
       // until the user manually refreshes the page.
       router.refresh()
     } catch (err: any) {
-      setError(err.message)
+      console.error('[Payment] Error initiating session:', err)
+      setError(err?.message || 'Unable to initialize payment method. Please try again.')
     } finally {
       setIsLoading(false)
     }
   }
+
+  useEffect(() => {
+    if (activeSession?.provider_id && !selectedPaymentMethod) {
+      setSelectedPaymentMethod(activeSession.provider_id)
+    }
+  }, [activeSession?.provider_id, selectedPaymentMethod])
 
   // Set payment method if there is one or more available and none is selected
   useEffect(() => {
@@ -139,16 +149,19 @@ const Payment = ({
     if (
       isOpen &&
       availablePaymentMethods.length > 0 &&
-      !selectedPaymentMethod
+      !selectedPaymentMethod &&
+      !activeSession
     ) {
       const sortedMethods = [...availablePaymentMethods].sort((a, b) => {
-        return a.provider_id > b.provider_id ? 1 : -1
+        const idA = a.provider_id || a.id || ''
+        const idB = b.provider_id || b.id || ''
+        return idA > idB ? 1 : -1
       })
       const defaultPaymentMethod = sortedMethods[0].id
       handlePaymentMethodChange(defaultPaymentMethod)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isOpen, availablePaymentMethods, selectedPaymentMethod])
+  }, [isOpen, availablePaymentMethods, selectedPaymentMethod, activeSession])
 
   return (
     <Box className="bg-primary p-5">
@@ -160,11 +173,11 @@ const Payment = ({
           })}
         >
           {!isOpen && !paymentReady ? (
-            <Stepper>3</Stepper>
+            <Stepper>2</Stepper>
           ) : !isOpen && paymentReady ? (
             <Stepper state="completed" />
           ) : (
-            <Stepper state="focussed">3</Stepper>
+            <Stepper state="focussed">2</Stepper>
           )}
           Payment
         </Heading>

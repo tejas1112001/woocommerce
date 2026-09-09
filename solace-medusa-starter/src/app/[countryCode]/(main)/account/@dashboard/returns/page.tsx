@@ -9,8 +9,8 @@ import ReturnsOverview, {
 } from '@modules/account/components/returns-overview'
 
 export const metadata: Metadata = {
-  title: 'Returns & Refunds',
-  description: 'View your return and refund requests.',
+  title: 'Returns & Refunds Request Status',
+  description: 'Track return requests and view refund statuses for your orders at Swami Om Enterprises.',
 }
 
 async function getOrdersWithReturns(): Promise<OrderWithReturns[]> {

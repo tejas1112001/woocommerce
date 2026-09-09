@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   title: 'Contact Swami Om Enterprises | Akkalkot, Maharashtra',
   description:
     'Contact Swami Om Enterprises in Akkalkot, Solapur. Call +91 73856 77447 for retail and wholesale Shree Swami Samarth devotional product queries.',
+  robots: {
+    index: true,
+    follow: true,
+  },
   alternates: {
     canonical: 'https://swamiomenterprises.in/contact',
   },

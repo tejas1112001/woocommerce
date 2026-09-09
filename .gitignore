@@ -1,0 +1,19 @@
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Test scripts
+test-*.js
+test-*.ps1
+test-*.ts
+restart-*.ps1
+check-db.js
+
+
+# OS files
+.DS_Store
+Thumbs.db

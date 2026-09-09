@@ -58,14 +58,12 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       .filter((p) => p.code !== undefined)
       .map((p) => p.code!)
 
-    await Promise.all([
-      applyPromotions(validPromotionCodes),
-      activeSession
-        ? initiatePaymentSession(cart, {
-            provider_id: activeSession.provider_id,
-          })
-        : Promise.resolve(),
-    ])
+    await applyPromotions(validPromotionCodes)
+    if (activeSession) {
+      await initiatePaymentSession(cart, {
+        provider_id: activeSession.provider_id,
+      })
+    }
 
     setIsRemoving(false)
     setErrorMessage('')
@@ -86,14 +84,12 @@ const DiscountCode: React.FC<DiscountCodeProps> = ({ cart }) => {
       .map((p) => p.code!)
     codes.push(typeof code === 'string' ? code : JSON.stringify(code))
 
-    await Promise.all([
-      applyPromotions(codes),
-      activeSession
-        ? initiatePaymentSession(cart, {
-            provider_id: activeSession.provider_id,
-          })
-        : Promise.resolve(),
-    ])
+    await applyPromotions(codes)
+    if (activeSession) {
+      await initiatePaymentSession(cart, {
+        provider_id: activeSession.provider_id,
+      })
+    }
 
     if (codeValue) {
       setCodeValue('')

@@ -84,6 +84,27 @@ class StoreSettingsModuleService extends MedusaService({
       return process.env.RAZORPAY_AUTO_CAPTURE || "true"
     }
 
+    // SMTP Settings defaults
+    if (key === "smtp.host") {
+      return process.env.SMTP_HOST || ""
+    }
+    if (key === "smtp.port") {
+      return process.env.SMTP_PORT || "587"
+    }
+    if (key === "smtp.user") {
+      return process.env.SMTP_USER || ""
+    }
+    if (key === "smtp.password") {
+      const pass = process.env.SMTP_PASSWORD || ""
+      return decryptSecret ? pass : maskSecret(pass)
+    }
+    if (key === "smtp.from_email") {
+      return process.env.SMTP_FROM_EMAIL || ""
+    }
+    if (key === "smtp.from_name") {
+      return process.env.SMTP_FROM_NAME || ""
+    }
+
     // General Store Setting defaults
     if (key === "store.maintenance_mode") return "false"
     if (key === "store.brand_name") return "Solace E-Commerce Store"
@@ -99,6 +120,12 @@ class StoreSettingsModuleService extends MedusaService({
       "razorpay.key_secret",
       "razorpay.webhook_secret",
       "razorpay.auto_capture",
+      "smtp.host",
+      "smtp.port",
+      "smtp.user",
+      "smtp.password",
+      "smtp.from_email",
+      "smtp.from_name",
       "store.maintenance_mode",
       "store.brand_name",
       "store.support_email",
@@ -106,7 +133,7 @@ class StoreSettingsModuleService extends MedusaService({
       "store.default_currency",
     ]
 
-    const secretKeys = new Set(["razorpay.key_secret", "razorpay.webhook_secret"])
+    const secretKeys = new Set(["razorpay.key_secret", "razorpay.webhook_secret", "smtp.password"])
     const result: Record<string, { value: string; is_secret: boolean; raw_masked?: string }> = {}
 
     for (const key of keys) {

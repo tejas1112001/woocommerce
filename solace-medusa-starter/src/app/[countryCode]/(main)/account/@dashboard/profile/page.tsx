@@ -7,8 +7,8 @@ import ProfileDetails from '@modules/account/components/profile-details'
 import Divider from '@modules/common/components/divider'
 
 export const metadata: Metadata = {
-  title: 'Profile',
-  description: 'View and edit your Tejas profile.',
+  title: 'Account Settings & Profile',
+  description: 'Update your contact details, personal preferences, and security settings at Swami Om Enterprises.',
 }
 
 export default async function Profile() {

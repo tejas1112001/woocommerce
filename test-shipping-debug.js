@@ -1,4 +1,4 @@
-const PUBLISHABLE_KEY = 'pk_5f0d388535f5278b3bc940ed10446ad41d7d33ae756abc58a94c9d19d75939db'
+const PUBLISHABLE_KEY = 'pk_1f43375a1a1b6a3ee767903198b3c5ae252965fa3937b1ea88de7f55d002fea9'
 const BACKEND_URL = 'http://localhost:9000'
 
 async function debugShipping() {

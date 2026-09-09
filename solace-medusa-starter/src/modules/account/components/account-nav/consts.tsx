@@ -50,7 +50,7 @@ export const profileNavItemsGroups = [
       type: 'link',
     },
     {
-      href: '#',
+      href: '/contact',
       icon: <HeadphonesIcon className="h-5 w-5" />,
       label: 'Support center',
       type: 'link',

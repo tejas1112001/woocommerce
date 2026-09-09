@@ -132,20 +132,6 @@ const Addresses = ({
     formData.append('email', checkout.values.email)
     formData.append('same_as_shipping', checkout.values.same_as_shipping ? 'on' : 'off')
 
-    const activeSession = cart?.payment_collection?.payment_sessions?.find(
-      (paymentSession: any) => paymentSession.status === 'pending'
-    )
-
-    if (activeSession) {
-      try {
-        await initiatePaymentSession(cart, {
-          provider_id: activeSession.provider_id,
-        })
-      } catch (error) {
-        console.error('Payment session refresh error:', error)
-      }
-    }
-
     startTransition(() => {
       formAction(formData)
     })
@@ -204,7 +190,7 @@ const Addresses = ({
               data-testid="submit-address-button"
               disabled={!checkout.isValid}
             >
-              Proceed to delivery
+              Proceed to payment
             </SubmitButton>
             {formError && (
               <ErrorMessage

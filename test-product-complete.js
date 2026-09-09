@@ -2,7 +2,7 @@
 // Uses native fetch (Node 18+)
 
 const BACKEND_URL = 'http://localhost:9000'
-const PUBLISHABLE_KEY = 'pk_6bdc9f0eb712287fba898904b9e918037ad956f9bf4ff9d92b039595415a58bf'
+const PUBLISHABLE_KEY = 'pk_1f43375a1a1b6a3ee767903198b3c5ae252965fa3937b1ea88de7f55d002fea9'
 const PRODUCT_HANDLE = 'test-product'
 const REGION_CODE = 'in'
 

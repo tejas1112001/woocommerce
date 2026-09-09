@@ -40,7 +40,10 @@ const PaymentButton: React.FC<PaymentButtonProps> = ({
   //   return <GiftCardPaymentButton />
   // }
 
-  const paymentSession = cart.payment_collection?.payment_sessions?.[0]
+  const paymentSession =
+    cart.payment_collection?.payment_sessions?.find(
+      (s: any) => s.status === 'pending'
+    ) ?? cart.payment_collection?.payment_sessions?.[0]
 
   switch (true) {
     case isStripe(paymentSession?.provider_id):
@@ -316,7 +319,13 @@ const PayPalPaymentButton = ({
   }
 }
 
-const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
+const ManualTestPaymentButton = ({
+  notReady,
+  'data-testid': dataTestId,
+}: {
+  notReady: boolean
+  'data-testid'?: string
+}) => {
   const [submitting, setSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
@@ -339,7 +348,6 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
 
   const handlePayment = () => {
     setSubmitting(true)
-
     onPaymentCompleted()
   }
 
@@ -349,7 +357,7 @@ const ManualTestPaymentButton = ({ notReady }: { notReady: boolean }) => {
         disabled={notReady}
         isLoading={submitting}
         onClick={handlePayment}
-        data-testid="submit-order-button"
+        data-testid={dataTestId ?? 'submit-order-button'}
       >
         Place order
       </Button>

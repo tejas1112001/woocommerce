@@ -74,6 +74,7 @@ const RazorpayPaymentButton: React.FC<RazorpayPaymentButtonProps> = ({
       // Razorpay order (razorpayOrder.amount) created server-side. Passing a
       // client-side amount would open an attack surface.
       order_id: orderId,
+      currency: cart.currency_code?.toUpperCase() || 'INR',
       name: process.env.NEXT_PUBLIC_SHOP_NAME || 'Store',
       description:
         process.env.NEXT_PUBLIC_SHOP_DESCRIPTION || 'Complete your order',
@@ -142,28 +143,29 @@ const RazorpayPaymentButton: React.FC<RazorpayPaymentButtonProps> = ({
         setProcessingState('Verifying payment...')
 
         try {
-          const { verified } = await verifyRazorpayPayment({
+          const result = await verifyRazorpayPayment({
             razorpay_payment_id: response.razorpay_payment_id,
             razorpay_order_id: response.razorpay_order_id,
             razorpay_signature: response.razorpay_signature,
           })
 
-          if (!verified) {
-            // Should not happen — verifyRazorpayPayment throws on failure —
-            // but guard defensively.
+          if (!result?.verified) {
+            console.error('[Razorpay] Signature verification failed:', result?.error)
             setErrorMessage(
-              'Payment verification failed. Please contact support.'
+              result?.error ||
+              'Payment verification failed. If you were charged, please contact support with payment ID: ' +
+              response.razorpay_payment_id
             )
             setSubmitting(false)
             setProcessingState(null)
             return
           }
         } catch (verifyError: any) {
-          console.error('[Razorpay] Signature verification failed:', verifyError)
+          console.error('[Razorpay] Signature verification exception:', verifyError)
           setErrorMessage(
-            'Payment verification failed. If you were charged, please contact ' +
-              'support with payment ID: ' +
-              response.razorpay_payment_id
+            verifyError?.message ||
+            'Payment verification encountered an unexpected error. Payment ID: ' +
+            response.razorpay_payment_id
           )
           setSubmitting(false)
           setProcessingState(null)
@@ -194,8 +196,8 @@ const RazorpayPaymentButton: React.FC<RazorpayPaymentButtonProps> = ({
             console.error('[Razorpay] placeOrder returned unexpectedly empty')
             setErrorMessage(
               'Your payment was received but we could not confirm your order. ' +
-                'Please contact support with payment ID: ' +
-                response.razorpay_payment_id
+              'Please contact support with payment ID: ' +
+              response.razorpay_payment_id
             )
           }
         } catch (orderError: any) {
@@ -304,3 +306,6 @@ const RazorpayPaymentButton: React.FC<RazorpayPaymentButtonProps> = ({
 }
 
 export default RazorpayPaymentButton
+
+
+

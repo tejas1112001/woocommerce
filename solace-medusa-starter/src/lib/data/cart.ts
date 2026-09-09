@@ -13,6 +13,8 @@ import { getAuthHeaders, getCartId, removeCartId, setCartId } from './cookies'
 import { getProductByHandle, getProductsById } from './products'
 import { getRegion } from './regions'
 import { getCustomer } from './customer'
+import { listCartShippingMethods } from './fulfillment'
+import { listCartPaymentMethods } from './payment'
 
 export async function retrieveCart() {
   const cartId = await getCartId()
@@ -42,6 +44,23 @@ export async function retrieveCart() {
         // action context.
       }
       return null
+    }
+
+    if (customer && (!cart.customer_id || cart.email !== customer.email)) {
+      try {
+        await sdk.store.cart.update(
+          cart.id,
+          { email: customer.email },
+          {},
+          authHeaders
+        )
+        cart.email = customer.email
+        if (customer.id) {
+          cart.customer_id = customer.id
+        }
+      } catch {
+        // Swallow background link update errors
+      }
     }
   }
 
@@ -334,14 +353,24 @@ export async function setShippingMethod({
 
   return sdk.store.cart
     .addShippingMethod(cartId, { option_id: shippingMethodId }, {}, authHeaders)
-    .then(() => {
+    .then(({ cart }) => {
       revalidateTag('cart', 'max')
+      return cart
     })
-    .catch(medusaError)
+    .catch((err) => {
+      // Fallback: retry without auth headers if authorization header caused a cart ownership mismatch
+      return sdk.store.cart
+        .addShippingMethod(cartId, { option_id: shippingMethodId })
+        .then(({ cart }) => {
+          revalidateTag('cart', 'max')
+          return cart
+        })
+        .catch(medusaError)
+    })
 }
 
 export async function initiatePaymentSession(
-  cart: HttpTypes.StoreCart,
+  cartInput: HttpTypes.StoreCart,
   data: {
     provider_id: string
     context?: Record<string, unknown>
@@ -349,13 +378,41 @@ export async function initiatePaymentSession(
 ) {
   const authHeaders = await getAuthHeaders()
 
+  // Always retrieve the latest cart from server DB so we don't rely on a stale client-side cart prop
+  const freshCart = await retrieveCart()
+  const cart = freshCart || cartInput
+
+  if (!cart) {
+    throw new Error('No cart found to initiate payment session')
+  }
+
+  // If there is already an active pending session with the same provider, reuse it
+  const existingPendingSession = cart?.payment_collection?.payment_sessions?.find(
+    (s: any) => s.provider_id === data.provider_id && s.status === 'pending'
+  )
+  if (existingPendingSession) {
+    return { payment_collection: cart.payment_collection }
+  }
+
   return sdk.store.payment
     .initiatePaymentSession(cart, data, {}, authHeaders)
     .then((resp) => {
-      revalidateTag('cart', 'max')
+      try {
+        revalidateTag('cart', 'max')
+      } catch {}
       return resp
     })
-    .catch(medusaError)
+    .catch(async (err) => {
+      // If error occurred because session already exists or was created concurrently, verify cart state
+      const recheckedCart = await retrieveCart().catch(() => null)
+      const hasSession = recheckedCart?.payment_collection?.payment_sessions?.some(
+        (s: any) => s.provider_id === data.provider_id
+      )
+      if (hasSession && recheckedCart?.payment_collection) {
+        return { payment_collection: recheckedCart.payment_collection }
+      }
+      return medusaError(err)
+    })
 }
 
 export async function applyPromotions(codes: string[]) {
@@ -470,6 +527,40 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
         phone: formData.get('billing_address.phone'),
       }
     await updateCart(data)
+
+    const updatedCart = await retrieveCart()
+    if (
+      updatedCart &&
+      (!updatedCart.shipping_methods || updatedCart.shipping_methods.length === 0)
+    ) {
+      const shippingMethods = await listCartShippingMethods(updatedCart.id)
+      if (shippingMethods && shippingMethods.length > 0) {
+        await setShippingMethod({
+          cartId: updatedCart.id,
+          shippingMethodId: shippingMethods[0].id,
+        })
+      }
+    }
+
+    // Pre-initialize payment session on the server so that when transitioning to payment step,
+    // the cart already contains an active payment session and Razorpay is ready immediately.
+    const finalCart = await retrieveCart()
+    if (finalCart && finalCart.region_id) {
+      const paymentMethods = await listCartPaymentMethods(finalCart.region_id)
+      if (paymentMethods && paymentMethods.length > 0) {
+        const sortedMethods = [...paymentMethods].sort((a, b) => {
+          const idA = a.provider_id || a.id || ''
+          const idB = b.provider_id || b.id || ''
+          return idA > idB ? 1 : -1
+        })
+        const defaultMethod = sortedMethods[0].id
+        await initiatePaymentSession(finalCart, {
+          provider_id: defaultMethod,
+        }).catch((sessionErr) => {
+          console.error('[setAddresses] Non-fatal payment session initialization error:', sessionErr)
+        })
+      }
+    }
   } catch (e: any) {
     return e.message
   }
@@ -477,7 +568,7 @@ export async function setAddresses(currentState: unknown, formData: FormData) {
   const rawCountryCode = (formData.get('shipping_address.country_code') as string) || ''
   const countryCode = rawCountryCode.toLowerCase()
 
-  redirect(getLocalizedPath('/checkout?step=delivery', countryCode))
+  redirect(getLocalizedPath('/checkout?step=payment', countryCode))
 }
 
 export async function placeOrder() {
@@ -491,18 +582,24 @@ export async function placeOrder() {
   /**
    * WHY RETRY LOGIC EXISTS:
    *
-   * After a Razorpay payment succeeds, there is a short window (< 2 seconds)
-   * where Medusa's payment session is transitioning from REQUIRES_MORE →
-   * AUTHORIZED. If placeOrder() is called during this window, cart.complete()
-   * returns { type: 'cart' } instead of { type: 'order' } because the
-   * payment hasn't been fully authorized yet.
+   * After a Razorpay payment succeeds, there is a short window where Medusa's
+   * payment session is transitioning from REQUIRES_MORE → AUTHORIZED.
    *
-   * We retry up to MAX_RETRIES times with exponential back-off to ride out
-   * this window. If the order still hasn't completed after all retries, we
-   * throw a descriptive error so the caller can show the right message.
+   * Medusa's built-in webhook handler delays processing by 5000ms
+   * (webhook_delay default). If placeOrder() is called before the webhook is
+   * processed, cart.complete() returns { type: 'cart' } because the payment
+   * session has not been authorized yet.
+   *
+   * We retry up to MAX_RETRIES times with BASE_DELAY_MS between each attempt
+   * to ride out this window. Total retry window = 6 × 2000ms = 12s, which
+   * comfortably outlasts the 5s webhook delay plus processing time.
    */
-  const MAX_RETRIES = 4
-  const BASE_DELAY_MS = 1500 // 1.5 s between retries
+  const MAX_RETRIES = 6
+  const BASE_DELAY_MS = 2000 // 2 s between retries → up to 12 s total
+  const INITIAL_DELAY_MS = 3000 // Wait 3s before first attempt to let webhook fire
+
+  // Give Medusa's webhook handler time to process (it has a 5s delay by default)
+  await new Promise((resolve) => setTimeout(resolve, INITIAL_DELAY_MS))
 
   for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
     const cartRes = await sdk.store.cart
