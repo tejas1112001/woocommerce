@@ -116,7 +116,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
           enableSystem={false}
         >
           <ProgressBar />
-          <Toaster position="bottom-right" closeButton />
+          <Toaster position="top-right" closeButton />
           <main className="relative">{props.children}</main>
         </ThemeProvider>
       </body>

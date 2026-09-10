@@ -229,35 +229,70 @@
 
 /* ── Toast Notification Positioning & Responsiveness ──────────────────────── */
 [data-sonner-toaster] {
-  z-index: 100 !important;
-  bottom: calc(210px + env(safe-area-inset-bottom, 0px)) !important;
+  z-index: 99999 !important;
+  top: calc(24px + env(safe-area-inset-top, 0px)) !important;
+  bottom: auto !important;
 }
 
-/* Mobile (< 640px): Centered horizontally inside cart drawer / viewport */
+/* Mobile (< 640px): Centered horizontally at the top of the viewport */
 @media (max-width: 639px) {
   [data-sonner-toaster] {
+    top: calc(16px + env(safe-area-inset-top, 0px)) !important;
     left: 50% !important;
     right: auto !important;
+    bottom: auto !important;
     transform: translateX(-50%) !important;
     width: calc(100vw - 32px) !important;
-    max-width: 380px !important;
+    max-width: 400px !important;
     display: flex !important;
     justify-content: center !important;
   }
 
   [data-sonner-toaster] [data-sonner-toast] {
     width: 100% !important;
-    max-width: 380px !important;
+    max-width: 400px !important;
   }
 }
 
-/* Desktop (>= 640px): Positioned near bottom-right of viewport / cart drawer */
+/* Desktop (>= 640px): Positioned at top-right of viewport */
 @media (min-width: 640px) {
   [data-sonner-toaster] {
+    top: 24px !important;
     right: 24px !important;
     left: auto !important;
+    bottom: auto !important;
     transform: none !important;
-    width: var(--width, 356px) !important;
+    width: var(--width, 360px) !important;
   }
 }
+
+/* Close (X) button: clearly visible, well-aligned, with modern hover effect */
+[data-sonner-toaster] [data-close-button] {
+  opacity: 0.65 !important;
+  top: 50% !important;
+  right: 10px !important;
+  left: auto !important;
+  transform: translateY(-50%) !important;
+  background: transparent !important;
+  border: none !important;
+  color: inherit !important;
+  cursor: pointer !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 24px !important;
+  height: 24px !important;
+  border-radius: 6px !important;
+  transition: opacity 0.15s ease, background-color 0.15s ease !important;
+}
+
+[data-sonner-toaster] [data-close-button]:hover {
+  opacity: 1 !important;
+  background-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.dark [data-sonner-toaster] [data-close-button]:hover {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+}
+
 
