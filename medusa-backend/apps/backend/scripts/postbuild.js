@@ -41,10 +41,13 @@ if (fs.existsSync(adminSrc)) {
     fs.cpSync(adminSrc, adminDest, { recursive: true, force: true });
     console.log('Copied admin dashboard build to public/admin');
   } catch (err) {
+    console.warn('Admin build copy warning:', err.message);
+  }
+}
+
 // Run dashboard branding updates
 try {
   require('./update-dashboard-branding');
 } catch (err) {
   console.warn('Dashboard branding script warning:', err.message);
 }
-
