@@ -223,7 +223,7 @@ const SideMenu = ({
 
         {/* Slide-in drawer container */}
         <DialogContent
-          className="fixed left-0 top-0 bottom-0 z-50 flex h-full w-[88vw] max-w-[360px] flex-col overflow-hidden bg-white shadow-2xl transition-transform duration-300 ease-in-out border-r border-gray-200/80"
+          className="fixed inset-y-0 left-0 top-0 bottom-0 z-50 flex h-full w-[88vw] max-w-[360px] translate-x-0 translate-y-0 flex-col overflow-hidden bg-white shadow-2xl transition-transform duration-300 ease-in-out border-r border-gray-200/80"
           aria-describedby={undefined}
         >
           {/* Header */}

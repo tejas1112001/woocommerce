@@ -26,7 +26,7 @@ export const DialogClose = forwardRef<
     <RadixDialog.Close
       asChild
       ref={forwardedRef}
-      className={cn(className, 'absolute h-12 w-12')}
+      className={cn('absolute h-12 w-12', className)}
       {...props}
     >
       {inner}
@@ -42,7 +42,7 @@ export const DialogOverlay = forwardRef<
   return (
     <RadixDialog.Overlay
       ref={forwardedRef}
-      className={cn(className, 'fixed inset-0 z-50 bg-black/40')}
+      className={cn('fixed inset-0 z-50 bg-black/40', className)}
       {...props}
     />
   )
@@ -57,8 +57,8 @@ export const DialogContent = forwardRef<
     <RadixDialog.Content
       ref={forwardedRef}
       className={cn(
-        className,
-        'fixed left-[50%] top-[50%] z-50 flex h-full w-full translate-x-[-50%] translate-y-[-50%] flex-col overflow-y-auto overflow-x-hidden bg-primary shadow-black-basic'
+        'fixed left-[50%] top-[50%] z-50 flex h-full w-full translate-x-[-50%] translate-y-[-50%] flex-col overflow-y-auto overflow-x-hidden bg-primary shadow-black-basic',
+        className
       )}
       {...props}
     >
@@ -76,8 +76,8 @@ export function DialogFooter({
   return (
     <div
       className={cn(
-        className,
-        'w-full text-wrap border-t-[.5px] border-basic-primary p-5'
+        'w-full text-wrap border-t-[.5px] border-basic-primary p-5',
+        className
       )}
       {...props}
     >
@@ -95,8 +95,8 @@ export function DialogHeader({
   return (
     <div
       className={cn(
-        className,
-        'relative w-full border-b-[.5px] border-basic-primary p-5 pr-16'
+        'relative w-full border-b-[.5px] border-basic-primary p-5 pr-16',
+        className
       )}
       {...props}
     >
@@ -112,7 +112,7 @@ export function DialogBody({
   ...props
 }: HTMLAttributes<HTMLDivElement>) {
   return (
-    <div className={cn(className, 'h-full w-full text-wrap')} {...props}>
+    <div className={cn('h-full w-full text-wrap', className)} {...props}>
       {children}
     </div>
   )
