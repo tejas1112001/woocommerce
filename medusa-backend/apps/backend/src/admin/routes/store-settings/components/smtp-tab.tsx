@@ -66,7 +66,17 @@ export const SmtpTab: React.FC<SmtpTabProps> = ({ settings, onSave, isSaving }) 
         body: JSON.stringify({ to: testEmail }),
       })
 
-      const data = await res.json()
+      const contentType = res.headers.get("content-type") || ""
+      let data: any = {}
+
+      if (contentType.includes("application/json")) {
+        data = await res.json()
+      } else {
+        const text = await res.text()
+        if (!res.ok) {
+          throw new Error(`Server returned HTTP ${res.status} (${res.statusText || "Non-JSON response"})`)
+        }
+      }
 
       if (!res.ok) {
         throw new Error(data.message || "Failed to send test email")

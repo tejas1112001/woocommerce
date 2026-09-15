@@ -114,7 +114,12 @@ function getCountryCode(
 export async function proxy(request: NextRequest) {
   const pathname = request.nextUrl.pathname
 
-  if (pathname === '/sitemap.xml' || pathname === '/robots.txt') {
+  if (
+    pathname === '/sitemap.xml' ||
+    pathname === '/robots.txt' ||
+    pathname.startsWith('/app') ||
+    pathname.startsWith('/admin')
+  ) {
     return NextResponse.next()
   }
 
@@ -230,5 +235,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico|sitemap\\.xml|robots\\.txt|logo|favicon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)'],
+  matcher: ['/((?!api|app|admin|_next/static|_next/image|favicon.ico|sitemap\\.xml|robots\\.txt|logo|favicon|.*\\.(?:svg|png|jpg|jpeg|gif|webp|ico)).*)'],
 }

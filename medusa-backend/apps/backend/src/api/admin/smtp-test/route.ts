@@ -1,16 +1,27 @@
 import { MedusaRequest, MedusaResponse } from "@medusajs/framework/http"
 import { ContainerRegistrationKeys } from "@medusajs/framework/utils"
 import nodemailer from "nodemailer"
+import { STORE_SETTINGS_MODULE } from "../../../modules/store-settings"
+import StoreSettingsModuleService from "../../../modules/store-settings/service"
 
 type SmtpTestRequest = MedusaRequest<{
   to: string
 }>
 
 export const POST = async (req: SmtpTestRequest, res: MedusaResponse) => {
-  const logger = req.scope.resolve(ContainerRegistrationKeys.LOGGER)
-  const storeSettingsService = req.scope.resolve("storeSettingsModule")
+  let logger = console as any
+  try {
+    logger = req.scope.resolve(ContainerRegistrationKeys.LOGGER)
+  } catch {}
 
   try {
+    let storeSettingsService: StoreSettingsModuleService
+    try {
+      storeSettingsService = req.scope.resolve(STORE_SETTINGS_MODULE)
+    } catch {
+      storeSettingsService = new StoreSettingsModuleService()
+    }
+
     const { to } = req.body
 
     if (!to) {
