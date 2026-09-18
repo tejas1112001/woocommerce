@@ -201,9 +201,9 @@ export default function OrderCompletedTemplate({
                   <div key={item.id} className="py-4 flex items-center gap-4">
                     {/* Thumbnail */}
                     <div className="h-16 w-16 flex-shrink-0 rounded-2xl bg-amber-50 border border-amber-100 overflow-hidden flex items-center justify-center">
-                      {item.thumbnail ? (
+                      {(item as any).variant?.product?.thumbnail || (item as any).variant?.thumbnail || item.thumbnail ? (
                         <img
-                          src={item.thumbnail}
+                          src={(item as any).variant?.product?.thumbnail || (item as any).variant?.thumbnail || item.thumbnail}
                           alt={item.title}
                           className="h-full w-full object-cover"
                         />

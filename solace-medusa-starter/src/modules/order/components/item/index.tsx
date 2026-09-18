@@ -31,50 +31,46 @@ const Item = ({ item }: ItemProps) => {
   const variantTitle = item.variant_title
 
   return (
-    <Box className="flex w-full bg-primary p-4" data-testid="product-row">
-      <div className="flex h-[100px] w-[100px] flex-shrink-0">
-        <Thumbnail
-          thumbnail={(item as any).variant?.product?.thumbnail || (item as any).variant?.thumbnail || item.thumbnail}
-          size="square"
-        />
-      </div>
-      <Box className="flex flex-1 flex-col justify-between px-4">
-        <Box>
+    <Box className="flex w-full items-center justify-between py-3.5 gap-3" data-testid="product-row">
+      <div className="flex items-center gap-3 min-w-0 flex-1">
+        <div className="flex h-16 w-16 sm:h-20 sm:w-20 flex-shrink-0 rounded-lg overflow-hidden border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900">
+          <Thumbnail
+            thumbnail={(item as any).variant?.product?.thumbnail || (item as any).variant?.thumbnail || item.thumbnail}
+            size="square"
+          />
+        </div>
+        <Box className="flex flex-col min-w-0">
           {item.product_collection && (
-            <Text size="base" className="text-secondary">
+            <Text className="text-[11px] sm:text-xs text-neutral-500 font-medium truncate">
               {item.product_collection}
             </Text>
           )}
-          <Text className="font-medium" data-testid="product-name">
+          <Text className="font-semibold text-xs sm:text-sm text-neutral-900 dark:text-white truncate" data-testid="product-name">
             {item.product_title}
           </Text>
           {/* Variant title */}
           {variantTitle && !isDefaultVariantTitle(variantTitle) && (
-            <Text size="base" className="text-secondary">
+            <Text className="text-[11px] sm:text-xs text-neutral-500 truncate">
               {variantTitle}
             </Text>
           )}
           {/* Individual variant options (size, color, etc.) */}
           {variantOptions.length > 0 && (
-            <Box className="mt-1 flex flex-wrap gap-x-3 gap-y-1">
+            <Box className="mt-0.5 flex flex-wrap gap-x-2 gap-y-0.5">
               {variantOptions.map((opt, i) => (
-                <Text key={i} size="base" className="text-secondary">
+                <Text key={i} className="text-[11px] text-neutral-500">
                   {opt}
                 </Text>
               ))}
             </Box>
           )}
-          <Text size="base" className="mt-1 text-secondary">
+          <Text className="text-[11px] sm:text-xs text-neutral-500 mt-0.5 font-medium">
             Qty: {item.quantity}
           </Text>
         </Box>
-        <LineItemPrice
-          item={item}
-          style="tight"
-          className="mt-2 flex-col items-start gap-0 medium:hidden"
-        />
-      </Box>
-      <Box className="hidden items-center justify-center medium:flex">
+      </div>
+
+      <Box className="flex-shrink-0 text-right">
         <LineItemPrice
           item={item}
           style="tight"

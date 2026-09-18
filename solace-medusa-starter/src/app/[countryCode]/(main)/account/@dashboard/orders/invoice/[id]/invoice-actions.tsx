@@ -25,11 +25,11 @@ export default function InvoiceActions({ displayId }: Props) {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-2.5 w-full sm:w-auto">
       <button
         type="button"
         onClick={handleBack}
-        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-colors border border-neutral-200/80 dark:border-neutral-700"
+        className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-medium text-neutral-700 bg-neutral-100 hover:bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200 dark:hover:bg-neutral-700 rounded-lg transition-colors border border-neutral-200/80 dark:border-neutral-700 flex-1 sm:flex-initial"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -50,7 +50,7 @@ export default function InvoiceActions({ displayId }: Props) {
       <button
         type="button"
         onClick={handlePrint}
-        className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 rounded-lg shadow-xs transition-colors"
+        className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 text-xs sm:text-sm font-medium text-white bg-neutral-900 hover:bg-neutral-800 dark:bg-white dark:text-neutral-900 dark:hover:bg-neutral-100 rounded-lg shadow-xs transition-colors flex-1 sm:flex-initial"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"

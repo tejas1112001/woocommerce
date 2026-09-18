@@ -31,8 +31,8 @@ const AccountLayout: React.FC<AccountLayoutProps> = ({
       <div className="print:hidden">
         <AccountMobileNav />
       </div>
-      <Container className="print:p-0 print:m-0 print:max-w-none">
-        <Box className="gap grid grid-cols-12 gap-6 print:block print:w-full">
+      <Container className="py-4 small:py-10 px-3.5 small:px-8 print:p-0 print:m-0 print:max-w-none">
+        <Box className="gap grid grid-cols-12 gap-4 small:gap-6 print:block print:w-full">
           <Box className="hidden xl:col-span-3 xl:block print:hidden">
             <AccountNav />
           </Box>

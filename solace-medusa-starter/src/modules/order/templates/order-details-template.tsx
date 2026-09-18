@@ -13,8 +13,6 @@ import ShippingDetails from '@modules/order/components/shipping-details'
 import CancelOrderButton from '@modules/order/components/cancel-order-button'
 import OrderProgress from '@modules/order/components/order-progress'
 
-import PaymentDetails from '../components/payment-details'
-
 type OrderDetailsTemplateProps = {
   order: HttpTypes.StoreOrder & { status: string }
 }
@@ -29,42 +27,53 @@ const OrderDetailsTemplate: React.FC<OrderDetailsTemplateProps> = ({
   })
 
   return (
-    <Box className="flex flex-col justify-center gap-6 small:gap-8">
-      {/* Back button */}
-      <Button variant="tonal" size="sm" asChild className="w-max">
-        <LocalizedClientLink
-          href="/account/orders"
-          data-testid="back-to-overview-button"
-        >
-          <ArrowLeftIcon />
-          Order history
-        </LocalizedClientLink>
-      </Button>
+    <Box className="flex flex-col gap-4 small:gap-6">
+      {/* Top Header & Navigation */}
+      <Box className="flex items-center justify-between gap-3">
+        <Button variant="tonal" size="sm" asChild className="w-max h-8 text-xs small:text-sm px-3">
+          <LocalizedClientLink
+            href="/account/orders"
+            data-testid="back-to-overview-button"
+          >
+            <ArrowLeftIcon className="w-3.5 h-3.5" />
+            Order history
+          </LocalizedClientLink>
+        </Button>
+        <Button variant="tonal" size="sm" asChild className="w-max h-8 text-xs small:text-sm px-3">
+          <LocalizedClientLink href={`/account/orders/invoice/${order.id}`}>
+            Invoice &rarr;
+          </LocalizedClientLink>
+        </Button>
+      </Box>
 
       {/* Order header */}
-      <Box className="flex flex-col gap-1">
-        <Heading as="h2" className="text-2xl small:text-3xl">
+      <Box className="flex flex-col gap-0.5">
+        <Heading as="h1" className="!text-xl small:!text-2xl !font-bold text-neutral-900 dark:text-white">
           Order #{order.display_id}
         </Heading>
-        <Text className="text-md text-secondary">Placed on {formattedDate}</Text>
+        <Text className="text-xs small:text-sm text-secondary">Placed on {formattedDate}</Text>
       </Box>
 
       {/* Order Tracking Progress Component */}
       <OrderProgress order={order} />
 
-      {/* Order content */}
-      <Box
-        className="flex h-full w-full flex-col gap-4"
+      {/* Main Order Content: 2-Column Desktop Grid / 1-Column Mobile */}
+      <div
+        className="grid grid-cols-1 lg:grid-cols-12 gap-4 small:gap-6 items-start"
         data-testid="order-details-container"
       >
-        <Items items={order.items} />
-        <OrderSummary order={order} />
-        <ShippingDetails order={order} />
-        <PaymentDetails order={order} />
+        {/* Left Column: Items & Delivery */}
+        <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4 small:gap-6">
+          <Items items={order.items} />
+          <ShippingDetails order={order} />
+        </div>
 
-        {/* Cancel Order Button - Shows only if order is cancellable */}
-        <CancelOrderButton order={order} />
-      </Box>
+        {/* Right Column: Summary & Actions */}
+        <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-4 small:gap-6 lg:sticky lg:top-24">
+          <OrderSummary order={order} />
+          <CancelOrderButton order={order} />
+        </div>
+      </div>
     </Box>
   )
 }

@@ -46,12 +46,12 @@ export default function OrderCard({
   return (
     <Box className="flex flex-col bg-primary border border-neutral-200 dark:border-neutral-800 rounded-xl shadow-xs overflow-hidden hover:shadow-md transition-all duration-200">
       {/* Header row */}
-      <Box className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-100 dark:border-neutral-800/80 px-4 py-3 large:px-5 bg-neutral-50/50 dark:bg-neutral-900/30">
-        <Box className="flex flex-wrap items-center gap-3">
-          <Text className="font-semibold text-neutral-900 dark:text-white text-sm">
+      <Box className="flex flex-wrap items-center justify-between gap-2 border-b border-neutral-100 dark:border-neutral-800/80 px-3.5 py-2.5 small:px-5 small:py-3 bg-neutral-50/50 dark:bg-neutral-900/30">
+        <Box className="flex flex-wrap items-center gap-2 small:gap-3">
+          <Text className="font-semibold text-neutral-900 dark:text-white text-xs small:text-sm">
             Order #{order.display_id}
           </Text>
-          <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+          <Text className="text-[11px] small:text-xs text-neutral-500 dark:text-neutral-400">
             Placed on{' '}
             {new Date(order.created_at)
               .toLocaleDateString('en-US', {
@@ -62,7 +62,7 @@ export default function OrderCard({
               .replace('.', '')}
           </Text>
         </Box>
-        <Box className="flex flex-wrap items-center gap-1.5">
+        <Box className="flex flex-wrap items-center gap-1 small:gap-1.5">
           <Badge
             label={orderStatus}
             variant={getStatusBadgeVariant(order.status)}
@@ -85,13 +85,13 @@ export default function OrderCard({
       </Box>
 
       {/* Body row */}
-      <Box className="flex flex-col gap-4 p-4 large:flex-row large:items-center large:justify-between large:p-5">
+      <Box className="flex flex-col gap-3 p-3.5 small:flex-row small:items-center small:justify-between small:p-5">
         {/* Thumbnails */}
-        <Box className="flex flex-wrap items-center gap-2.5">
+        <Box className="flex flex-wrap items-center gap-2 small:gap-2.5">
           {order.items.slice(0, 3).map((item, index) => (
             <Thumbnail
               key={index}
-              thumbnail={item.thumbnail || (item as any).variant?.product?.thumbnail || (item as any).variant?.thumbnail}
+              thumbnail={(item as any).variant?.product?.thumbnail || (item as any).variant?.thumbnail || item.thumbnail}
               href={getLocalizedPath(`/products/${item.product_handle}`, countryCode)}
               size="big"
             />
@@ -106,12 +106,12 @@ export default function OrderCard({
         </Box>
 
         {/* Price + action */}
-        <Box className="flex items-center justify-between gap-4 large:flex-col large:items-end">
-          <Box className="flex flex-col items-start large:items-end">
-            <Text className="text-xs text-neutral-500 dark:text-neutral-400">
+        <Box className="flex items-center justify-between gap-3 small:flex-col small:items-end">
+          <Box className="flex flex-col items-start small:items-end">
+            <Text className="text-[11px] small:text-xs text-neutral-500 dark:text-neutral-400">
               Total Amount
             </Text>
-            <Text className="text-base font-bold text-neutral-900 dark:text-white">
+            <Text className="text-sm small:text-base font-bold text-neutral-900 dark:text-white">
               {convertToLocale({
                 amount: order.total,
                 currency_code: order.currency_code,
@@ -119,12 +119,12 @@ export default function OrderCard({
             </Text>
           </Box>
           <Box className="flex flex-wrap gap-2 items-center justify-end">
-            <Button variant="text" size="sm" asChild className="w-max">
+            <Button variant="text" size="sm" asChild className="w-max h-8 px-2.5 small:px-3 text-xs small:text-sm">
               <LocalizedClientLink href={`/account/orders/invoice/${order.id}`}>
                 Invoice
               </LocalizedClientLink>
             </Button>
-            <Button variant="tonal" size="sm" asChild className="w-max">
+            <Button variant="tonal" size="sm" asChild className="w-max h-8 px-2.5 small:px-3 text-xs small:text-sm">
               <LocalizedClientLink href={`/account/orders/details/${order.id}`}>
                 View details &rarr;
               </LocalizedClientLink>

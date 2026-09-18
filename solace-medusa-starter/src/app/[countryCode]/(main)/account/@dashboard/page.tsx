@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 
+import { enrichLineItems } from '@lib/data/cart'
 import { getCustomer } from '@lib/data/customer'
 import { listOrders } from '@lib/data/orders'
 import Overview from '@modules/account/components/overview'
@@ -22,10 +23,23 @@ export default async function OverviewTemplate() {
     notFound()
   }
 
+  let orders = result.orders ?? []
+  if (orders && orders.length > 0) {
+    orders = await Promise.all(
+      orders.map(async (order) => {
+        if (order.items && order.items.length > 0 && order.region_id) {
+          const enrichedItems = await enrichLineItems(order.items, order.region_id)
+          return { ...order, items: enrichedItems } as any
+        }
+        return order
+      })
+    )
+  }
+
   return (
     <Overview
       customer={customer}
-      orders={(result.orders ?? []) as unknown as OrderType[]}
+      orders={orders as unknown as OrderType[]}
       totalOrders={result.count ?? 0}
     />
   )

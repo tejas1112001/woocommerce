@@ -289,17 +289,17 @@ const OrderProgress: React.FC<OrderProgressProps> = ({ order }) => {
   const friendlyStatus = getCustomerFriendlyOrderStatus(order.status)
 
   return (
-    <Box className="bg-primary border border-neutral-200 dark:border-neutral-800 rounded-xl p-5 small:p-6 shadow-xs flex flex-col gap-6">
+    <Box className="bg-primary border border-neutral-200 dark:border-neutral-800 rounded-xl p-4 sm:p-5 shadow-xs flex flex-col gap-4 sm:gap-5">
       {/* Header */}
-      <Box className="flex flex-wrap items-center justify-between gap-3 pb-3 border-b border-neutral-100 dark:border-neutral-800/60">
-        <Box className="flex items-center gap-2.5">
-          <Box className="w-2.5 h-2.5 rounded-full bg-neutral-900 dark:bg-white animate-pulse" />
-          <Text className="text-base font-semibold text-primary">
+      <Box className="flex flex-wrap items-center justify-between gap-2 pb-2.5 border-b border-neutral-100 dark:border-neutral-800/60">
+        <Box className="flex items-center gap-2">
+          <Box className="w-2 h-2 rounded-full bg-neutral-900 dark:bg-white animate-pulse" />
+          <Text className="text-sm sm:text-base font-bold text-primary">
             Order Progress
           </Text>
         </Box>
-        <Box className="flex items-center gap-2">
-          <Text className="text-xs text-secondary hidden small:inline">
+        <Box className="flex items-center gap-1.5">
+          <Text className="text-xs text-secondary hidden sm:inline">
             Status:
           </Text>
           <Badge
@@ -311,9 +311,9 @@ const OrderProgress: React.FC<OrderProgressProps> = ({ order }) => {
 
       {/* Cancelled Banner if Order is Cancelled */}
       {isCancelled && (
-        <Box className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-lg p-4 text-red-700 dark:text-red-400 text-sm flex items-center gap-3">
+        <Box className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/50 rounded-lg p-3 sm:p-4 text-red-700 dark:text-red-400 text-xs sm:text-sm flex items-center gap-2.5">
           <svg
-            className="w-5 h-5 flex-shrink-0"
+            className="w-4 h-4 flex-shrink-0"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -325,27 +325,16 @@ const OrderProgress: React.FC<OrderProgressProps> = ({ order }) => {
               d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <Text className="text-sm font-medium text-red-700 dark:text-red-400">
+          <Text className="text-xs sm:text-sm font-medium text-red-700 dark:text-red-400">
             This order has been cancelled.
           </Text>
         </Box>
       )}
 
-      {/* Mobile Swipe Hint */}
-      <Box className="flex items-center justify-end sm:hidden px-1 -mb-2">
-        <Text className="text-[11px] font-medium text-neutral-400 dark:text-neutral-500 flex items-center gap-1">
-          <span>Swipe to track</span>
-          <svg className="w-3.5 h-3.5 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-          </svg>
-        </Text>
-      </Box>
-
-      {/* Responsive Horizontal Tracker (Scrollable on mobile with segmented lines and generous padding) */}
-      <Box className="w-full relative py-1">
-        {/* Scrollable Container */}
-        <Box className="overflow-x-auto no-scrollbar touch-pan-x py-2 px-2 sm:px-4">
-          <Box className="flex items-start justify-between min-w-[580px] sm:min-w-full w-full px-4 sm:px-6">
+      {/* Responsive Horizontal Tracker */}
+      <Box className="w-full relative">
+        <Box className="overflow-x-auto no-scrollbar touch-pan-x py-1">
+          <Box className="flex items-start justify-between min-w-[320px] sm:min-w-full w-full px-1 sm:px-2">
             {steps.map((step, index) => {
               const isComp = step.state === 'completed'
               const isCurr = step.state === 'current'
@@ -357,32 +346,34 @@ const OrderProgress: React.FC<OrderProgressProps> = ({ order }) => {
                 <React.Fragment key={step.id}>
                   {/* Step Node Column */}
                   <Box
-                    className="flex flex-col items-center text-center flex-shrink-0 w-24 sm:w-28 relative z-10"
+                    className="flex flex-col items-center text-center flex-shrink-0 w-14 sm:w-24 relative z-10"
                     aria-current={isCurr ? 'step' : undefined}
                   >
                     {/* Circle Node */}
                     <Box
-                      className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 relative ${
+                      className={`w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center transition-all duration-300 relative ${
                         isComp
-                          ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-md ring-4 ring-white dark:ring-neutral-950'
+                          ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-xs ring-2 ring-white dark:ring-neutral-950'
                           : isCurr
-                            ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-lg ring-4 ring-neutral-900/20 dark:ring-white/20'
-                            : 'bg-neutral-100 dark:bg-neutral-800/80 text-neutral-400 dark:text-neutral-500 border border-neutral-300 dark:border-neutral-700'
+                            ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900 shadow-md ring-2 ring-neutral-900/20 dark:ring-white/20'
+                            : 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400 dark:text-neutral-500 border border-neutral-300 dark:border-neutral-700'
                       }`}
                     >
-                      {step.icon}
+                      {React.cloneElement(step.icon as React.ReactElement<any>, {
+                        className: 'w-3.5 h-3.5 sm:w-4 sm:h-4',
+                      })}
 
                       {/* Completed Checkmark Badge Overlay */}
                       {isComp && (
-                        <Box className="absolute -bottom-0.5 -right-0.5 w-4 h-4 rounded-full bg-emerald-600 text-white flex items-center justify-center ring-2 ring-white dark:ring-neutral-950">
-                          <CheckMarkIcon className="w-2.5 h-2.5" />
+                        <Box className="absolute -bottom-0.5 -right-0.5 w-3 h-3 sm:w-3.5 sm:h-3.5 rounded-full bg-emerald-600 text-white flex items-center justify-center ring-1 ring-white dark:ring-neutral-950">
+                          <CheckMarkIcon className="w-1.5 h-1.5 sm:w-2 sm:h-2" />
                         </Box>
                       )}
                     </Box>
 
                     {/* Step Label */}
                     <Text
-                      className={`text-xs small:text-sm mt-3 leading-tight transition-colors text-center ${
+                      className={`text-[9px] sm:text-xs mt-1.5 leading-tight transition-colors text-center max-w-[56px] sm:max-w-[84px] ${
                         isComp
                           ? 'font-semibold text-neutral-900 dark:text-white'
                           : isCurr
@@ -394,21 +385,17 @@ const OrderProgress: React.FC<OrderProgressProps> = ({ order }) => {
                     </Text>
 
                     {/* Step Date */}
-                    <Text
-                      className={`text-[11px] mt-1 text-center ${
-                        step.date && (isComp || isCurr)
-                          ? 'text-neutral-500 dark:text-neutral-400 font-normal'
-                          : 'text-transparent select-none'
-                      }`}
-                    >
-                      {step.date || '---'}
-                    </Text>
+                    {step.date && (isComp || isCurr) && (
+                      <Text className="text-[8px] sm:text-[10px] mt-0.5 text-center text-neutral-500 dark:text-neutral-400 font-normal leading-tight">
+                        {step.date}
+                      </Text>
+                    )}
                   </Box>
 
                   {/* Segmented Connector Line between steps */}
                   {!isLast && (
                     <Box
-                      className={`flex-1 h-0.5 mt-5 min-w-[28px] sm:min-w-[40px] transition-all duration-500 ${
+                      className={`flex-1 h-0.5 mt-3.5 sm:mt-4.5 min-w-[8px] sm:min-w-[24px] transition-all duration-500 ${
                         isNextActive
                           ? 'bg-neutral-900 dark:bg-white'
                           : 'bg-neutral-200 dark:bg-neutral-800'

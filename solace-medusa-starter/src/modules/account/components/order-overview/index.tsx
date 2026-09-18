@@ -28,16 +28,16 @@ const OrderOverview = ({
 
   if (orders?.length) {
     return (
-      <Box className="flex flex-col gap-6">
+      <Box className="flex flex-col gap-4 small:gap-6">
         <Box className="flex items-center justify-between">
-          <Heading as="h1" className="text-xl small:text-2xl font-bold">
+          <Heading as="h1" className="!text-lg small:!text-2xl !font-bold text-neutral-900 dark:text-white">
             Order History
           </Heading>
-          <Text className="text-sm font-medium text-neutral-500 dark:text-neutral-400">
+          <Text className="text-xs small:text-sm font-medium text-neutral-500 dark:text-neutral-400">
             {totalCount} {totalCount === 1 ? 'order' : 'orders'} total
           </Text>
         </Box>
-        <Box className="flex w-full flex-col gap-4">
+        <Box className="flex w-full flex-col gap-3 small:gap-4">
           {orders.map((o) => (
             <OrderCard key={o.id} order={o} />
           ))}
@@ -59,20 +59,20 @@ const OrderOverview = ({
 export function NoOrders() {
   return (
     <Box
-      className="flex w-full flex-col items-center gap-6 bg-primary border border-neutral-200 dark:border-neutral-800 rounded-xl p-8 text-center shadow-xs"
+      className="flex w-full flex-col items-center gap-4 small:gap-6 bg-primary border border-neutral-200 dark:border-neutral-800 rounded-xl p-6 small:p-8 text-center shadow-xs"
       data-testid="no-orders-container"
     >
-      <Box className="w-16 h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-500">
-        <BoxIcon className="w-8 h-8" />
+      <Box className="w-12 h-12 small:w-16 small:h-16 rounded-full bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center text-neutral-500">
+        <BoxIcon className="w-6 h-6 small:w-8 small:h-8" />
       </Box>
-      <Box className="flex flex-col items-center gap-2">
-        <Heading as="h2" className="text-xl text-neutral-900 dark:text-white font-semibold">
+      <Box className="flex flex-col items-center gap-1.5 small:gap-2">
+        <Heading as="h2" className="!text-base small:!text-xl text-neutral-900 dark:text-white !font-bold">
           No orders yet
         </Heading>
-        <Text className="max-w-[438px] text-center text-sm text-neutral-500 dark:text-neutral-400">
+        <Text className="max-w-[438px] text-center text-xs small:text-sm text-neutral-500 dark:text-neutral-400">
           You haven&apos;t placed any orders yet. Explore our shop and start shopping!
         </Text>
-        <Button variant="filled" size="sm" asChild className="mt-3">
+        <Button variant="filled" size="sm" asChild className="mt-2 small:mt-3">
           <LocalizedClientLink href="/shop">Start shopping</LocalizedClientLink>
         </Button>
       </Box>
