@@ -1,0 +1,54 @@
+diff --git a/node_modules/medusa-plugin-razorpay-v2/.medusa/server/src/providers/payment-razorpay/src/core/razorpay-base.js b/node_modules/medusa-plugin-razorpay-v2/.medusa/server/src/providers/payment-razorpay/src/core/razorpay-base.js
+index 3f11c8b..957832e 100644
+--- a/node_modules/medusa-plugin-razorpay-v2/.medusa/server/src/providers/payment-razorpay/src/core/razorpay-base.js
++++ b/node_modules/medusa-plugin-razorpay-v2/.medusa/server/src/providers/payment-razorpay/src/core/razorpay-base.js
+@@ -192,9 +192,18 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+             if (!paymentSessionId) {
+                 throw new utils_1.MedusaError(utils_1.MedusaError.Types.INVALID_DATA, "Payment session ID is required");
+             }
++            // FIX: Write medusa_payment_session_id into Razorpay order notes immediately.
++            // The webhook (payment.captured / payment.authorized) fires BEFORE cart.complete()
++            // is called. Without this, notes.medusa_payment_session_id is undefined at webhook
++            // time, so the webhook handler cannot resolve the payment session → order never
++            // created even though money was debited.
++            const razorpayOrderWithNotes = await this.updateRazorpayOrderMetadata(razorpayOrder.id, {
++                medusa_payment_session_id: paymentSessionId
++            });
++            this.logger.info(`[Razorpay Backend] Stored medusa_payment_session_id in Razorpay order notes: ${paymentSessionId}`);
+             return {
+                 id: paymentSessionId,
+-                data: { razorpayOrder: razorpayOrder }
++                data: { razorpayOrder: razorpayOrderWithNotes }
+             };
+         }
+         catch (error) {
+@@ -402,7 +411,8 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+                 return {
+                     action: utils_1.PaymentActions.SUCCESSFUL,
+                     data: {
+-                        session_id: paymentData.notes.session_id,
++                        // FIX: was paymentData.notes.session_id (never written) — correct key is medusa_payment_session_id
++                        session_id: paymentData.notes.medusa_payment_session_id,
+                         amount: outstanding
+                     }
+                 };
+@@ -410,7 +420,8 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+                 return {
+                     action: utils_1.PaymentActions.AUTHORIZED,
+                     data: {
+-                        session_id: paymentData.notes.session_id,
++                        // FIX: was paymentData.notes.session_id (never written) — correct key is medusa_payment_session_id
++                        session_id: paymentData.notes.medusa_payment_session_id,
+                         amount: outstanding
+                     }
+                 };
+@@ -418,7 +429,8 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+                 return {
+                     action: utils_1.PaymentActions.FAILED,
+                     data: {
+-                        session_id: paymentData.notes.session_id,
++                        // FIX: was paymentData.notes.session_id (never written) — correct key is medusa_payment_session_id
++                        session_id: paymentData.notes.medusa_payment_session_id,
+                         amount: outstanding
+                     }
+                 };
