@@ -5,23 +5,36 @@ import StoreSettingsModuleService from "../../modules/store-settings/service"
 
 export async function GET(req: MedusaRequest, res: MedusaResponse) {
   try {
-    let storeName = ""
+    // Cache at edge/CDN for 5 minutes, allow stale while revalidating
+    res.setHeader("Cache-Control", "public, max-age=60, s-maxage=300, stale-while-revalidate=600")
 
-    // 1. Try to get store name from store-settings module first if configured
+    let storeName = ""
+    let logoUrl = ""
+    let supportEmail = ""
+    let supportPhone = ""
+    let defaultCurrency = "INR"
+
+    let service: StoreSettingsModuleService
     try {
-      let service: StoreSettingsModuleService
-      try {
-        service = req.scope.resolve(STORE_SETTINGS_MODULE)
-      } catch {
-        service = new StoreSettingsModuleService()
-      }
+      service = req.scope.resolve(STORE_SETTINGS_MODULE)
+    } catch {
+      service = new StoreSettingsModuleService()
+    }
+
+    try {
       const customBrand = await service.getSetting("store.brand_name")
       if (customBrand && customBrand.trim() && customBrand.trim() !== "Solace E-Commerce Store") {
         storeName = customBrand.trim()
       }
-    } catch {}
+      logoUrl = await service.getSetting("store.logo_url")
+      supportEmail = await service.getSetting("store.support_email")
+      supportPhone = await service.getSetting("store.support_phone")
+      defaultCurrency = (await service.getSetting("store.default_currency")) || "INR"
+    } catch (e) {
+      console.warn("Error fetching store settings in /store-info:", e)
+    }
 
-    // 2. Get store name from core store
+    // 2. Fallback to core store name if not specified in store-settings
     if (!storeName) {
       try {
         const query = req.scope.resolve(ContainerRegistrationKeys.QUERY)
@@ -44,15 +57,23 @@ export async function GET(req: MedusaRequest, res: MedusaResponse) {
     }
 
     if (!storeName) {
-      storeName = "Store"
+      storeName = "Swami Om Enterprises"
     }
 
     return res.json({
       name: storeName,
+      logo_url: logoUrl || "",
+      support_email: supportEmail || "support@swamiomenterprises.in",
+      support_phone: supportPhone || "+91 7385677447",
+      default_currency: defaultCurrency || "INR",
     })
   } catch (err: any) {
     return res.json({
-      name: "Store",
+      name: "Swami Om Enterprises",
+      logo_url: "",
+      support_email: "support@swamiomenterprises.in",
+      support_phone: "+91 7385677447",
+      default_currency: "INR",
     })
   }
 }

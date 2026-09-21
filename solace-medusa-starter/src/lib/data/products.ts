@@ -33,8 +33,6 @@ export const getProductByHandle = async function (
   handle: string,
   regionId: string
 ) {
-  console.log('[DEBUG getProductByHandle] CALLED with handle:', handle, '| regionId:', regionId)
-
   const result = await sdk.store.product
     .list(
       {
@@ -46,14 +44,7 @@ export const getProductByHandle = async function (
       { next: { tags: ['products'] } }
     )
 
-  console.log('[DEBUG getProductByHandle] sdk.store.product.list() returned', result.products.length, 'product(s)')
-  result.products.forEach((p, i) => {
-    console.log(`[DEBUG getProductByHandle]   [${i}] id=${p.id} handle=${p.handle} title=${p.title}`)
-  })
-
   const product = result.products[0]
-  console.log('[DEBUG getProductByHandle] Returning products[0]:', product ? `id=${product.id}` : 'undefined')
-
   return product
 }
 
@@ -71,8 +62,6 @@ export const getProductsList = async function ({
   nextPage: number | null
   queryParams?: HttpTypes.FindParams & HttpTypes.StoreProductParams
 }> {
-  noStore()
-
   const limit = queryParams?.limit || 12
   const offset = Math.max(0, (pageParam - 1) * limit)
   const region = await getRegion(countryCode)
@@ -93,7 +82,7 @@ export const getProductsList = async function ({
           '*variants.calculated_price,+variants.inventory_quantity,*variants,*variants.prices',
         ...queryParams,
       },
-      { next: { tags: ['products'] } }
+      { next: { tags: ['products'], revalidate: 300 } }
     )
     .then(({ products }) => {
       const filteredProducts = products.filter((product) => {

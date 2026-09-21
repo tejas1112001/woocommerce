@@ -1,6 +1,8 @@
 import type { SubscriberArgs, SubscriberConfig } from "@medusajs/framework"
 import { ContainerRegistrationKeys, Modules } from "@medusajs/framework/utils"
 import nodemailer from "nodemailer"
+import { STORE_SETTINGS_MODULE } from "../modules/store-settings"
+import StoreSettingsModuleService from "../modules/store-settings/service"
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -175,7 +177,7 @@ function buildTotalsBlock(order: any): string {
 }
 
 // ── Customer confirmation email ───────────────────────────────────────────────
-function customerEmailHtml(order: any): { subject: string; html: string; text: string } {
+function customerEmailHtml(order: any, logoUrl: string = "", brandName: string = "Om Swami Enterprises"): { subject: string; html: string; text: string } {
   const currency = order.currency_code ?? "inr"
   const payStatus = humanizePaymentStatus(
     order.payment_collections?.[0]?.status ?? order.payment_status
@@ -195,7 +197,11 @@ function customerEmailHtml(order: any): { subject: string; html: string; text: s
   const discount = Number(order.discount_total ?? 0)
   const total = subtotal + shipping + (isNaN(tax) ? 0 : tax) - (isNaN(discount) ? 0 : discount)
 
-  const subject = `Order Confirmed — #${order.display_id ?? order.id.slice(-8).toUpperCase()} | Om Swami Enterprises`
+  const subject = `Order Confirmed — #${order.display_id ?? order.id.slice(-8).toUpperCase()} | ${brandName}`
+
+  const headerContent = logoUrl
+    ? `<img src="${logoUrl}" alt="${brandName}" style="max-height:56px;max-width:220px;height:auto;width:auto;display:inline-block;vertical-align:middle;" />`
+    : `<h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:1px;">${brandName}</h1>`
 
   const html = `
 <!DOCTYPE html>
@@ -207,8 +213,8 @@ function customerEmailHtml(order: any): { subject: string; html: string; text: s
       <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;width:100%;">
 
         <!-- Header -->
-        <tr><td style="background:#1a1a1a;padding:28px 32px;text-align:center;">
-          <h1 style="color:#fff;margin:0;font-size:22px;letter-spacing:1px;">Om Swami Enterprises</h1>
+        <tr><td style="background:#1a1a1a;padding:24px 32px;text-align:center;">
+          ${headerContent}
         </td></tr>
 
         <!-- Hero -->
@@ -303,7 +309,7 @@ Questions? Contact us at ${process.env.SMTP_FROM_EMAIL}
 }
 
 // ── Admin notification email ──────────────────────────────────────────────────
-function adminEmailHtml(order: any): { subject: string; html: string; text: string } {
+function adminEmailHtml(order: any, logoUrl: string = "", brandName: string = "Om Swami Enterprises"): { subject: string; html: string; text: string } {
   const currency = order.currency_code ?? "inr"
   const payStatus = humanizePaymentStatus(
     order.payment_collections?.[0]?.status ?? order.payment_status
@@ -325,6 +331,10 @@ function adminEmailHtml(order: any): { subject: string; html: string; text: stri
 
   const subject = `🛒 New Order #${order.display_id ?? order.id.slice(-8).toUpperCase()} — ${formatPrice(total, currency)}`
 
+  const headerContent = logoUrl
+    ? `<img src="${logoUrl}" alt="${brandName}" style="max-height:45px;max-width:180px;height:auto;width:auto;display:inline-block;vertical-align:middle;" />`
+    : `<h2 style="color:#fff;margin:0;font-size:18px;">🛒 New Order Received</h2><p style="color:#aaa;margin:4px 0 0;font-size:13px;">${brandName} Admin Alert</p>`
+
   const html = `
 <!DOCTYPE html>
 <html>
@@ -335,8 +345,7 @@ function adminEmailHtml(order: any): { subject: string; html: string; text: stri
       <table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;max-width:600px;width:100%;">
 
         <tr><td style="background:#1a1a1a;padding:20px 32px;">
-          <h2 style="color:#fff;margin:0;font-size:18px;">🛒 New Order Received</h2>
-          <p style="color:#aaa;margin:4px 0 0;font-size:13px;">Om Swami Enterprises Admin Alert</p>
+          ${headerContent}
         </td></tr>
 
         <!-- Order + Customer Summary -->
@@ -525,14 +534,19 @@ export default async function orderPlacedHandler({
         "billing_address.postal_code",
         "billing_address.country_code",
         "billing_address.phone",
-        // Line items
-        "items.*",
-        "items.detail.*",
-        "items.item.*",
-        "items.variant.*",
-        "items.product.*",
+        // Line items (specific scalar fields for email template)
+        "items.id",
+        "items.title",
+        "items.product_title",
+        "items.variant_title",
+        "items.quantity",
+        "items.unit_price",
+        "items.thumbnail",
+        "items.subtotal",
+        "items.total",
         // Shipping methods
-        "shipping_methods.*",
+        "shipping_methods.name",
+        "shipping_methods.amount",
         // Payment
         "payment_collections.status",
         "payment_status",
@@ -552,16 +566,35 @@ export default async function orderPlacedHandler({
       logger.warn(`[order-placed] Order ${orderId} has no customer email — skipping customer email`)
     }
 
-    // ── 2. Send customer confirmation email ────────────────────────────────
+    // ── 2. Fetch Store Branding (Logo & Name) ───────────────────────────
+    let logoUrl = ""
+    let brandName = "Om Swami Enterprises"
+    try {
+      let storeSettingsService: StoreSettingsModuleService
+      try {
+        storeSettingsService = container.resolve(STORE_SETTINGS_MODULE)
+      } catch {
+        storeSettingsService = new StoreSettingsModuleService()
+      }
+      logoUrl = await storeSettingsService.getSetting("store.logo_url")
+      const customBrand = await storeSettingsService.getSetting("store.brand_name")
+      if (customBrand && customBrand.trim()) {
+        brandName = customBrand.trim()
+      }
+    } catch (e) {
+      logger.warn(`[order-placed] Could not load store settings branding: ${e}`)
+    }
+
+    // ── 3. Send customer confirmation email ────────────────────────────────
     if (customerEmail) {
-      const { subject, html, text } = customerEmailHtml(order)
+      const { subject, html, text } = customerEmailHtml(order, logoUrl, brandName)
       await sendEmail({ to: customerEmail, subject, html, text, logger })
       logger.info(`[order-placed] Customer confirmation sent to ${customerEmail}`)
     }
 
-    // ── 3. Send admin notification email ───────────────────────────────────
+    // ── 4. Send admin notification email ───────────────────────────────────
     if (adminEmail) {
-      const { subject, html, text } = adminEmailHtml(order)
+      const { subject, html, text } = adminEmailHtml(order, logoUrl, brandName)
       await sendEmail({ to: adminEmail, subject, html, text, logger })
       logger.info(`[order-placed] Admin notification sent to ${adminEmail}`)
     }

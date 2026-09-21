@@ -585,23 +585,14 @@ export async function placeOrder() {
    * After a Razorpay payment succeeds, there is a short window where Medusa's
    * payment session is transitioning from REQUIRES_MORE → AUTHORIZED.
    *
-   * Medusa's built-in webhook handler delays processing by 5000ms
-   * (webhook_delay default). If placeOrder() is called before the webhook is
-   * processed, cart.complete() returns { type: 'cart' } because the payment
-   * session has not been authorized yet.
-   *
-   * We retry up to MAX_RETRIES times with BASE_DELAY_MS between each attempt
-   * to ride out this window. Total retry window = 6 × 2000ms = 12s, which
-   * comfortably outlasts the 5s webhook delay plus processing time.
+   * We attempt completion immediately without initial artificial delays. If
+   * the session is still transitioning, we perform up to 2 quick retries
+   * (1 second apart) to keep the worst-case hold time under 2s instead of 15s.
    */
-  const MAX_RETRIES = 6
-  const BASE_DELAY_MS = 2000 // 2 s between retries → up to 12 s total
-  const INITIAL_DELAY_MS = 3000 // Wait 3s before first attempt to let webhook fire
+  const MAX_ATTEMPTS = 3 // 1 initial try + up to 2 quick retries
+  const RETRY_DELAY_MS = 1000 // 1s between attempts
 
-  // Give Medusa's webhook handler time to process (it has a 5s delay by default)
-  await new Promise((resolve) => setTimeout(resolve, INITIAL_DELAY_MS))
-
-  for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     const cartRes = await sdk.store.cart
       .complete(cartId, {}, authHeaders)
       .then((cartRes) => {
@@ -619,11 +610,11 @@ export async function placeOrder() {
     }
 
     // Cart is still in a non-order state; wait before retrying
-    if (attempt < MAX_RETRIES) {
+    if (attempt < MAX_ATTEMPTS) {
       console.log(
-        `[placeOrder] cart.complete returned type='${cartRes?.type}' on attempt ${attempt}/${MAX_RETRIES}. Retrying in ${BASE_DELAY_MS}ms…`
+        `[placeOrder] cart.complete returned type='${cartRes?.type}' on attempt ${attempt}/${MAX_ATTEMPTS}. Retrying in ${RETRY_DELAY_MS}ms…`
       )
-      await new Promise((resolve) => setTimeout(resolve, BASE_DELAY_MS))
+      await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
     }
   }
 

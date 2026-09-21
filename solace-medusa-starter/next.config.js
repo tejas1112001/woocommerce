@@ -9,12 +9,23 @@ checkEnvVariables()
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    // TO DO: Fix this in the future
-    unoptimized: true,
+    formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {
         protocol: 'http',
         hostname: 'localhost',
+      },
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+      },
+      {
+        protocol: 'http',
+        hostname: '66.116.232.174',
+      },
+      {
+        protocol: 'https',
+        hostname: '66.116.232.174',
       },
       {
         protocol: 'https',

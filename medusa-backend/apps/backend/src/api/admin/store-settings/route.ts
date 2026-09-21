@@ -36,7 +36,7 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
       service = new StoreSettingsModuleService()
     }
 
-    const secretKeys = new Set(["razorpay.key_secret", "razorpay.webhook_secret"])
+    const secretKeys = new Set(["razorpay.key_secret", "razorpay.webhook_secret", "smtp.password"])
 
     for (const [key, val] of Object.entries(body.settings)) {
       let strVal = ""
