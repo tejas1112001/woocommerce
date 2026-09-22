@@ -78,9 +78,17 @@ module.exports = defineConfig({
             },
           },
           {
-            resolve: "@medusajs/medusa/locking-redis",
+            resolve: "@medusajs/medusa/locking",
             options: {
-              redisUrl: process.env.REDIS_URL,
+              providers: [
+                {
+                  resolve: "@medusajs/locking-redis",
+                  id: "locking-redis",
+                  options: {
+                    redisUrl: process.env.REDIS_URL,
+                  },
+                },
+              ],
             },
           },
         ]
@@ -132,9 +140,6 @@ module.exports = defineConfig({
                 process.env.RAZORPAY_TEST_WEBHOOK_SECRET ??
                 process.env.RAZORPAY_WEBHOOK_SECRET ??
                 "local_dev_webhook_secret",
-              // Enable automatic payment capture
-              // When true, payments are automatically captured after authorization
-              // This removes the need for manual "Capture Payment" in admin
               auto_capture: true,
             },
           },
@@ -142,10 +147,6 @@ module.exports = defineConfig({
       },
     },
     {
-      // Notification module — uses only the custom smtp-notification provider
-      // which is installed and handles all email needs via direct nodemailer.
-      // Note: @perseidesjs/notification-nodemailer is NOT installed (not in
-      // package.json), so it is excluded to prevent a MODULE_NOT_FOUND crash.
       resolve: "@medusajs/medusa/notification",
       options: {
         providers: [
@@ -171,5 +172,3 @@ module.exports = defineConfig({
     },
   ],
 })
-// Reload trigger
-
