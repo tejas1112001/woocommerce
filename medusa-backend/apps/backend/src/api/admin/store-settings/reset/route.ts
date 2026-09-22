@@ -8,6 +8,13 @@ export async function POST(req: MedusaRequest, res: MedusaResponse) {
   console.log("[STORE-SETTINGS] Received POST request to reset store data")
 
   try {
+    // Strict production guard: Block database wipe in production unless explicitly unlocked
+    if (process.env.NODE_ENV === "production" && process.env.ALLOW_STORE_RESET !== "true") {
+      return res.status(403).json({
+        message: "Database reset is permanently disabled in production environments for data protection.",
+      })
+    }
+
     const body = (req.body || {}) as { confirm_text?: string }
 
     if (body.confirm_text !== "RESET STORE DATA") {

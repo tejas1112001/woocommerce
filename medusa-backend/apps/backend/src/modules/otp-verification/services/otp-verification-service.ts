@@ -1,5 +1,6 @@
 import { Logger } from "@medusajs/framework/types"
 import * as bcrypt from "bcrypt"
+import crypto from "crypto"
 import { Client } from "pg"
 
 type InjectedDependencies = {
@@ -43,11 +44,10 @@ class OtpVerificationService {
   }
 
   /**
-   * Generate a cryptographically-strong 6-digit OTP code.
+   * Generate a cryptographically-strong 6-digit OTP code using CSPRNG.
    */
   private generateOTP(): string {
-    // Math.random() is fine for OTP codes — they are time-limited and attempt-counted.
-    const otp = Math.floor(100000 + Math.random() * 900000)
+    const otp = crypto.randomInt(100000, 1000000)
     return otp.toString()
   }
 

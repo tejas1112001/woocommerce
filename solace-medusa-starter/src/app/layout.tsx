@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import { Poppins } from 'next/font/google'
 
+import { getStoreSettings } from '@lib/data/store-settings'
+import { StoreSettingsProvider } from '@lib/context/store-settings-context'
 import { getBaseURL } from '@lib/util/env'
 import { JsonLd } from '@modules/common/components/json-ld'
 import { ProgressBar } from '@modules/common/components/progress-bar'
@@ -61,13 +63,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout(props: { children: React.ReactNode }) {
+export default async function RootLayout(props: { children: React.ReactNode }) {
+  const storeSettings = await getStoreSettings()
+  const activeLogo = storeSettings.logo_url || 'https://swamiomenterprises.in/logo/logo.png'
+
   const organizationSchema = {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Swami Om Enterprises',
+    name: storeSettings.name || 'Swami Om Enterprises',
     url: 'https://swamiomenterprises.in',
-    logo: 'https://swamiomenterprises.in/logo/logo.png',
+    logo: activeLogo,
     description:
       'Store for Shree Swami Samarth devotional products from Akkalkot, Solapur, Maharashtra.',
     address: {
@@ -81,7 +86,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
     contactPoint: [
       {
         '@type': 'ContactPoint',
-        telephone: '+91-7385677447',
+        telephone: storeSettings.support_phone || '+91-7385677447',
         contactType: 'customer service',
         availableLanguage: ['en', 'mr', 'hi'],
       },
@@ -97,7 +102,7 @@ export default function RootLayout(props: { children: React.ReactNode }) {
   const websiteSchema = {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Swami Om Enterprises',
+    name: storeSettings.name || 'Swami Om Enterprises',
     url: 'https://swamiomenterprises.in',
     potentialAction: {
       '@type': 'SearchAction',
@@ -108,19 +113,24 @@ export default function RootLayout(props: { children: React.ReactNode }) {
 
   return (
     <html lang="en" className={poppins.variable} suppressHydrationWarning>
-      <body className={`${poppins.className} font-sans text-basic-primary`}>
+      <head>
         <JsonLd id="jsonld-organization-website" data={[organizationSchema, websiteSchema]} />
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
-        >
-          <ProgressBar />
-          <Toaster position="top-right" closeButton />
-          <main className="relative">{props.children}</main>
-        </ThemeProvider>
+      </head>
+      <body className={`${poppins.className} font-sans text-basic-primary`}>
+        <StoreSettingsProvider initialSettings={storeSettings}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem={false}
+          >
+            <ProgressBar />
+            <Toaster position="top-right" closeButton />
+            <main className="relative">{props.children}</main>
+          </ThemeProvider>
+        </StoreSettingsProvider>
       </body>
     </html>
   )
 }
+
 

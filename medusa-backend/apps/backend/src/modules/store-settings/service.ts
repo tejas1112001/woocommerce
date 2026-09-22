@@ -12,9 +12,28 @@ interface SettingPayload {
   is_secret?: boolean
 }
 
+interface CacheEntry {
+  value: string
+  expiresAt: number
+}
+const settingsCache = new Map<string, CacheEntry>()
+const CACHE_TTL_MS = 60 * 1000 // 60 seconds TTL
+
 class StoreSettingsModuleService extends MedusaService({
   StoreSetting,
 }) {
+  private getCached(key: string): string | null {
+    const entry = settingsCache.get(key)
+    if (entry && entry.expiresAt > Date.now()) {
+      return entry.value
+    }
+    return null
+  }
+
+  private setCached(key: string, value: string) {
+    settingsCache.set(key, { value, expiresAt: Date.now() + CACHE_TTL_MS })
+  }
+
   private readFallbackStore(): Record<string, { value: string; is_secret: boolean }> {
     try {
       if (fs.existsSync(FALLBACK_FILE_PATH)) {
@@ -40,15 +59,23 @@ class StoreSettingsModuleService extends MedusaService({
   }
 
   async getSetting(key: string, decryptSecret: boolean = false): Promise<string> {
+    const cacheKey = `${key}_${decryptSecret}`
+    const cached = this.getCached(cacheKey)
+    if (cached !== null) {
+      return cached
+    }
+
     // 1. Check DB first
     try {
       const settings = await (this as any).listStoreSettings({ key })
       if (settings && settings.length > 0) {
         const setting = settings[0]
+        let val = setting.value
         if (setting.is_secret) {
-          return decryptSecret ? decrypt(setting.value) : maskSecret(decrypt(setting.value))
+          val = decryptSecret ? decrypt(setting.value) : maskSecret(decrypt(setting.value))
         }
-        return setting.value
+        this.setCached(cacheKey, val)
+        return val
       }
     } catch (err) {
       // Table might not exist yet before migration
@@ -58,11 +85,13 @@ class StoreSettingsModuleService extends MedusaService({
     const fallback = this.readFallbackStore()
     if (fallback[key]) {
       const item = fallback[key]
+      let val = item.value
       if (item.is_secret) {
         const raw = decrypt(item.value)
-        return decryptSecret ? raw : maskSecret(raw)
+        val = decryptSecret ? raw : maskSecret(raw)
       }
-      return item.value
+      this.setCached(cacheKey, val)
+      return val
     }
 
     // 3. Environment Variable Defaults
@@ -109,6 +138,7 @@ class StoreSettingsModuleService extends MedusaService({
     if (key === "store.maintenance_mode") return "false"
     if (key === "store.brand_name") return "Solace E-Commerce Store"
     if (key === "store.support_email") return "support@solace-store.com"
+    if (key === "store.logo_url") return ""
 
     return ""
   }
@@ -128,6 +158,7 @@ class StoreSettingsModuleService extends MedusaService({
       "smtp.from_name",
       "store.maintenance_mode",
       "store.brand_name",
+      "store.logo_url",
       "store.support_email",
       "store.support_phone",
       "store.default_currency",
@@ -149,6 +180,10 @@ class StoreSettingsModuleService extends MedusaService({
   }
 
   async setSetting(key: string, value: string, isSecret: boolean = false): Promise<void> {
+    // Invalidate cached values on write
+    settingsCache.delete(`${key}_true`)
+    settingsCache.delete(`${key}_false`)
+
     let finalValue = value
 
     // If it's a secret key and the user provided a masked value, don't overwrite with mask

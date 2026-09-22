@@ -21,13 +21,33 @@ if (nodeEnv === 'production' && existsSync(productionEnvPath)) {
   dotenv.config({ path: productionEnvPath, override: true })
 }
 
+const jwtSecret = process.env.JWT_SECRET
+const cookieSecret = process.env.COOKIE_SECRET
+
+if (nodeEnv === "production") {
+  const isInsecure = (s?: string) => !s || s === "supersecret" || s.length < 32
+  if (isInsecure(jwtSecret) || isInsecure(cookieSecret)) {
+    throw new Error(
+      "[CRITICAL SECURITY ERROR] In production, JWT_SECRET and COOKIE_SECRET must be set to unique, " +
+      "cryptographically strong strings with a minimum length of 32 characters. " +
+      "Do not use default placeholder secrets."
+    )
+  }
+}
+
+const isRedisConfigured = Boolean(
+  process.env.REDIS_URL && process.env.REDIS_URL.trim() !== ""
+)
+
 module.exports = defineConfig({
   projectConfig: {
     databaseUrl: process.env.DATABASE_URL,
     databaseDriverOptions: {
       pool: {
-        min: 2,
-        max: 10,
+        min: 5,
+        max: 30,
+        idleTimeoutMillis: 30000,
+        acquireTimeoutMillis: 30000,
       },
     },
     redisUrl: process.env.REDIS_URL,
@@ -35,12 +55,36 @@ module.exports = defineConfig({
       storeCors: process.env.STORE_CORS!,
       adminCors: process.env.ADMIN_CORS!,
       authCors: process.env.AUTH_CORS!,
-      jwtSecret: process.env.JWT_SECRET || "supersecret",
-      cookieSecret: process.env.COOKIE_SECRET || "supersecret",
+      jwtSecret: jwtSecret || "supersecret",
+      cookieSecret: cookieSecret || "supersecret",
     }
   },
   plugins: [],
   modules: [
+    ...(isRedisConfigured
+      ? [
+          {
+            resolve: "@medusajs/medusa/event-bus-redis",
+            options: {
+              redisUrl: process.env.REDIS_URL,
+            },
+          },
+          {
+            resolve: "@medusajs/medusa/workflow-engine-redis",
+            options: {
+              redis: {
+                url: process.env.REDIS_URL,
+              },
+            },
+          },
+          {
+            resolve: "@medusajs/medusa/locking-redis",
+            options: {
+              redisUrl: process.env.REDIS_URL,
+            },
+          },
+        ]
+      : []),
     {
       resolve: "./src/modules/store-settings",
     },
