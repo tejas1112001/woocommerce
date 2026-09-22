@@ -22,7 +22,7 @@ export const RazorpayTab: React.FC<RazorpayTabProps> = ({ settings, onSave, isSa
     setTestingConnection(true)
     setTestResult(null)
     try {
-      const res = await fetch("/admin/store-settings/razorpay/test", {
+      const res = await fetch("/admin/store-settings/razorpay/verify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",

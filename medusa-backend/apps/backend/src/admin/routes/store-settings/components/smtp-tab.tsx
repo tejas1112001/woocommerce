@@ -59,7 +59,7 @@ export const SmtpTab: React.FC<SmtpTabProps> = ({ settings, onSave, isSaving }) 
 
     setIsTesting(true)
     try {
-      const res = await fetch("/admin/smtp-test", {
+      const res = await fetch("/admin/smtp-check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
