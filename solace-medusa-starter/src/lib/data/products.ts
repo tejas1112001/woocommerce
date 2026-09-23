@@ -82,7 +82,7 @@ export const getProductsList = async function ({
           '*variants.calculated_price,+variants.inventory_quantity,*variants,*variants.prices',
         ...queryParams,
       },
-      { next: { tags: ['products'], revalidate: 300 } }
+      { next: { tags: ['products'] } }
     )
     .then(({ products }) => {
       const filteredProducts = products.filter((product) => {

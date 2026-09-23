@@ -18,7 +18,7 @@ export async function POST(req: NextRequest) {
   const body = await req.json().catch(() => ({}))
   const tag = body?.tag || 'products'
 
-  revalidateTag(tag)
+  revalidateTag(tag, 'max')
   console.log(`[revalidate] Purged Next.js cache tag: '${tag}'`)
 
   return NextResponse.json({ revalidated: true, tag, timestamp: Date.now() })
