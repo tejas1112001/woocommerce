@@ -1,5 +1,5 @@
 diff --git a/node_modules/medusa-plugin-razorpay-v2/.medusa/server/src/providers/payment-razorpay/src/core/razorpay-base.js b/node_modules/medusa-plugin-razorpay-v2/.medusa/server/src/providers/payment-razorpay/src/core/razorpay-base.js
-index 3657949..ea4c18a 100644
+index 3657949..6b4841c 100644
 --- a/node_modules/medusa-plugin-razorpay-v2/.medusa/server/src/providers/payment-razorpay/src/core/razorpay-base.js
 +++ b/node_modules/medusa-plugin-razorpay-v2/.medusa/server/src/providers/payment-razorpay/src/core/razorpay-base.js
 @@ -22,17 +22,19 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
@@ -38,9 +38,18 @@ index 3657949..ea4c18a 100644
          if (!(0, utils_1.isDefined)(options.automatic_expiry_period)) {
              if (!(0, utils_1.isDefined)(options.manual_expiry_period)) {
                  throw new utils_1.MedusaError(utils_1.MedusaErrorTypes.INVALID_ARGUMENT, "Required option `manual_expiry_period` is missing in Razorpay plugin");
-@@ -85,10 +84,8 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+@@ -79,16 +78,18 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+         }
+     }
+     async authorizePayment(input) {
++        this.logger.info(`[Razorpay Provider] authorizePayment invoked with input: ${JSON.stringify(input)}`);
+         const { razorpayOrder, paymentSession } = await this.getPaymentSessionAndOrderFromInput(input);
++        this.logger.info(`[Razorpay Provider] authorizePayment resolved order=${razorpayOrder?.id}, session=${paymentSession?.id}`);
+         const paymentStatusRequest = {
+             ...input
          };
          const status = await this.getPaymentStatus(paymentStatusRequest);
++        this.logger.info(`[Razorpay Provider] authorizePayment getPaymentStatus returned: ${JSON.stringify(status)}`);
          const result = await this.syncPaymentSession(paymentSession.id, razorpayOrder.id);
 -        if (status.status === utils_1.PaymentSessionStatus.AUTHORIZED &&
 -            this.options_.auto_capture) {
@@ -48,10 +57,11 @@ index 3657949..ea4c18a 100644
 -        }
 +        // Note: Medusa v2 cart completion requires status: AUTHORIZED ("authorized").
 +        // Do NOT mutate status.status to CAPTURED here as Medusa v2 Payment Module does not treat "captured" as authorized during cart completion.
++        this.logger.info(`[Razorpay Provider] authorizePayment returning status=${status.status} for session=${paymentSession?.id}`);
          return {
              data: {
                  razorpayOrder: result.razorpayOrder
-@@ -152,10 +149,11 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+@@ -152,10 +153,11 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
              razorpayOrder: razorpayOrder
          };
      }
@@ -64,7 +74,7 @@ index 3657949..ea4c18a 100644
              payment: {
                  capture: (this.options_.auto_capture ?? true)
                      ? "automatic"
-@@ -180,25 +178,39 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+@@ -180,25 +182,39 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
          };
      }
      getToPay(amount, currency_code) {
@@ -108,7 +118,7 @@ index 3657949..ea4c18a 100644
              throw new utils_1.MedusaError(utils_1.MedusaError.Types.INVALID_DATA, `Failed to create Razorpay order: ${error.message}`);
          }
      }
-@@ -299,7 +311,7 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+@@ -299,7 +315,7 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
              return utils_1.PaymentSessionStatus.ERROR;
          }
          else {
@@ -117,7 +127,7 @@ index 3657949..ea4c18a 100644
              const totalAuthorised = authorisedAttempts.reduce((p, c) => {
                  const data = p + parseInt(`${c.amount}`, 10);
                  return data;
-@@ -392,17 +404,49 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+@@ -392,17 +408,49 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
          }
          const paymentData = webhookData.data
              .payload?.payment?.entity;
@@ -172,7 +182,7 @@ index 3657949..ea4c18a 100644
                          amount: outstanding
                      }
                  };
-@@ -410,7 +454,7 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+@@ -410,7 +458,7 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
                  return {
                      action: utils_1.PaymentActions.AUTHORIZED,
                      data: {
@@ -181,7 +191,7 @@ index 3657949..ea4c18a 100644
                          amount: outstanding
                      }
                  };
-@@ -418,7 +462,7 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
+@@ -418,7 +466,7 @@ class RazorpayBase extends utils_1.AbstractPaymentProvider {
                  return {
                      action: utils_1.PaymentActions.FAILED,
                      data: {
