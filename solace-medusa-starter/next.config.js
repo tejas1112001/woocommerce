@@ -6,9 +6,16 @@ checkEnvVariables()
 /**
  * @type {import('next').NextConfig}
  */
+const isDev = process.env.NODE_ENV === 'development'
+
 const nextConfig = {
   reactStrictMode: true,
+  // Allow cross-origin requests from local dev servers
+  allowedDevOrigins: ['localhost:9000', '127.0.0.1:9000'],
   images: {
+    // In development, skip Next.js image optimization to avoid the
+    // "resolved to private ip" error when backend runs on localhost
+    unoptimized: isDev,
     formats: ['image/avif', 'image/webp'],
     remotePatterns: [
       {

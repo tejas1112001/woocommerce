@@ -68,10 +68,10 @@ export default async function Checkout(props: {
 
   const cart = await fetchCart()
 
-  // If no cart exists, redirect to cart page instead of showing 404
-  // This handles the case where cart was just completed or expired
+  // If no cart exists (e.g. cart was just completed into an order and cleared),
+  // return null so server actions can cleanly complete without triggering an unexpected redirect interruption
   if (!cart) {
-    redirect(getLocalizedPath('/cart', countryCode))
+    return null
   }
 
   return (

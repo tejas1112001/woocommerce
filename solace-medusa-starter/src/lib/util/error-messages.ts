@@ -111,16 +111,24 @@ export const getCustomerFriendlyError = (error: PaymentError): string => {
 }
 
 /**
- * Message shown when payment succeeds but order creation fails
- * Critical: Prevents customer from retrying and being charged twice
+ * Message shown when payment succeeds but order creation fails on the frontend.
+ *
+ * WHY THIS IS SAFE:
+ * Even when cart.complete() times out on the browser side, the Razorpay webhook
+ * (payment.captured → processPaymentWorkflow → completeCartAfterPaymentStep) will
+ * create the order automatically on the backend. The customer WILL receive a
+ * confirmation email once that happens — typically within seconds to a few minutes.
+ *
+ * Critical: do NOT say "contact support — we will complete manually."
+ * That was inaccurate and alarming. The system handles recovery automatically.
  */
 export const getNetworkFailureMessage = (paymentId: string): string => {
   const shortId = paymentId.slice(0, 20)
   return (
-    `Your payment was successful (ID: ${shortId}...), but we encountered an error creating your order. ` +
-    `DO NOT retry payment as you have already been charged. ` +
-    `Please contact our support team immediately with this payment ID: ${shortId}... ` +
-    `We will complete your order manually.`
+    `Your payment was successful (ID: ${shortId}...). ` +
+    `Your order is being created — you will receive a confirmation email shortly. ` +
+    `Do NOT pay again. ` +
+    `If you do not receive an email within 10 minutes, please contact support with Payment ID: ${shortId}...`
   )
 }
 

@@ -584,19 +584,30 @@ export async function placeOrder() {
    *
    * After a Razorpay payment succeeds, there is a short window where Medusa's
    * payment session is transitioning from REQUIRES_MORE → AUTHORIZED.
+   * On localhost with live keys, webhooks cannot reach the backend, so
+   * cart.complete() must poll until the Razorpay API reflects the capture.
    *
-   * We attempt completion immediately without initial artificial delays. If
-   * the session is still transitioning, we perform up to 2 quick retries
-   * (1 second apart) to keep the worst-case hold time under 2s instead of 15s.
+   * Strategy: 2s initial wait (INITIAL_DELAY_MS) + up to 6 attempts × 2s = 14s worst-case.
+   * On production with webhooks configured, the webhook fires BEFORE this code
+   * runs, so cart.complete() typically succeeds on the first attempt.
+   *
+   * If all retries fail: the error is caught in razorpay-payment-button.tsx
+   * (catch block, line ~203). A safe "email incoming" message is shown, and
+   * the Razorpay webhook creates the order automatically on the backend via
+   * processPaymentWorkflow → completeCartAfterPaymentStep. No manual action needed.
    */
-  const MAX_ATTEMPTS = 3 // 1 initial try + up to 2 quick retries
-  const RETRY_DELAY_MS = 1000 // 1s between attempts
+  const MAX_ATTEMPTS = 6 // 1 initial try + up to 5 retries
+  const RETRY_DELAY_MS = 2000 // 2s between attempts
+
+  // On live mode, allow Razorpay's auto-capture to settle before first attempt
+  const INITIAL_DELAY_MS = 2000
+  await new Promise((resolve) => setTimeout(resolve, INITIAL_DELAY_MS))
 
   for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
     const cartRes = await sdk.store.cart
       .complete(cartId, {}, authHeaders)
       .then((cartRes) => {
-        revalidateTag('cart', 'max')
+        revalidateTag('cart')
         return cartRes
       })
       .catch(medusaError)
@@ -611,8 +622,9 @@ export async function placeOrder() {
 
     // Cart is still in a non-order state; wait before retrying
     if (attempt < MAX_ATTEMPTS) {
+      const paymentStatus = (cartRes as any)?.cart?.payment_collection?.payment_sessions?.[0]?.status
       console.log(
-        `[placeOrder] cart.complete returned type='${cartRes?.type}' on attempt ${attempt}/${MAX_ATTEMPTS}. Retrying in ${RETRY_DELAY_MS}ms…`
+        `[placeOrder] cart.complete returned type='${cartRes?.type}' (payment status: ${paymentStatus ?? 'unknown'}) on attempt ${attempt}/${MAX_ATTEMPTS}. Retrying in ${RETRY_DELAY_MS}ms…`
       )
       await new Promise((resolve) => setTimeout(resolve, RETRY_DELAY_MS))
     }
