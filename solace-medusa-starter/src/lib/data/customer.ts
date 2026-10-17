@@ -127,7 +127,11 @@ export async function signup(
       password: password,
     })
 
-    const customHeaders = { authorization: `Bearer ${token}` }
+    // The backend re-checks the email OTP from this header before creating the customer.
+    const customHeaders = {
+      authorization: `Bearer ${token}`,
+      'x-verification-token': verificationToken,
+    }
 
     await sdk.store.customer.create(customerForm, {}, customHeaders)
 
@@ -276,7 +280,6 @@ export async function updateCustomerPassword(
   _currentState: { success: boolean; error: string | null },
   formData: FormData
 ): Promise<{ success: boolean; error: string | null }> {
-  const email_raw = formData.get('email') as string
   const old_password = formData.get('old_password') as string
   const new_password = formData.get('new_password') as string
   const confirm_password = formData.get('confirm_password') as string
@@ -290,25 +293,19 @@ export async function updateCustomerPassword(
   }
 
   try {
-    // Verify old password by attempting a login
-    await sdk.auth.login('customer', 'emailpass', {
-      email: email_raw,
-      password: old_password,
-    })
-
-    // Update password via the auth update endpoint
+    // /auth/customer/emailpass/update only accepts reset tokens, so a logged-in
+    // change goes through the backend route, which checks the current password.
     const authHeaders = await getAuthHeaders()
     const token = (authHeaders as any)['authorization']?.replace('Bearer ', '')
 
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/auth/customer/emailpass/update`,
+      `${process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL}/store/customer/change-password`,
       {
         method: 'POST',
-        credentials: 'include',
         headers: getPublishableHeaders({
           ...(token ? { authorization: `Bearer ${token}` } : {}),
         }),
-        body: JSON.stringify({ email: email_raw, password: new_password }),
+        body: JSON.stringify({ old_password, new_password }),
       }
     )
 
